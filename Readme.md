@@ -1,5 +1,13 @@
-Simple Vaadin application with CDI and stuff
+Simple imgur browser application with Vaadin
 ======================
+
+Technologies
+-----------
+
+* Vaadin 7
+* Java EE 6
+* RESTEasy
+* GSON
 
 Run
 ======================

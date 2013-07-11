@@ -85,16 +85,9 @@
 			<artifactId>vaadin-themes</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
 		
 		<!-- Vaadin CDI
+		See https://vaadin.com/wiki/-/wiki/Main/Vaadin-CDI-integration
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-cdi</artifactId>
@@ -102,12 +95,52 @@
 		</dependency>
 		-->
 		
-		<!-- Java EE 6 API -->
+		<!-- REST -->
 		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>6.0</version>
-			<scope>provided</scope>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-jaxrs</artifactId>
+		    <version>2.3.1.GA</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-jackson-provider</artifactId>
+		    <version>2.3.1.GA</version>
+		</dependency>
+		
+		<!-- Jersey 2.0
+			classpath problems with java.lang.NoSuchMethodError: javax.ws.rs.core.MultivaluedMap.addAll(Ljava/lang/Object;[Ljava/lang/Object;)V
+		<dependency>
+		    <groupId>javax.ws.rs</groupId>
+		    <artifactId>javax.ws.rs-api</artifactId>
+		    <version>2.0</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.glassfish.jersey.containers</groupId>
+		    <artifactId>jersey-container-servlet</artifactId>
+		    <version>2.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.jersey.core</groupId>
+		    <artifactId>jersey-client</artifactId>
+		    <version>2.0</version>
+		</dependency>
+		-->
+		
+		<!-- Jersey 1.x
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.17.1</version>
+		</dependency>
+		-->
+		
+		<!--  Gson: Java to Json conversion -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>1.7.1</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Logging -->
@@ -121,6 +154,41 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
+		
+		<!-- Java EE 6 API -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
+			<scope>provided</scope>
+		</dependency>
+ 
+ 		<!-- If not using javaee-api
+ 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+	       <groupId>org.apache.geronimo.specs</groupId>
+	       <artifactId>geronimo-ejb_3.1_spec</artifactId>
+	       <version>1.0</version>
+	       <scope>provided</scope>
+	   </dependency>
+		<dependency>
+		   <groupId>javax.enterprise</groupId>
+		   <artifactId>cdi-api</artifactId>
+		   <scope>provided</scope>
+		   <version>1.1</version>
+		</dependency>
+		<dependency>
+		   <groupId>javax.annotation</groupId>
+		   <artifactId>jsr250-api</artifactId>
+		   <scope>provided</scope>
+		   <version>1.0</version>
+		</dependency>
+		-->
 	</dependencies>
 
 	<build>
@@ -208,6 +276,18 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.8</version>
+					<configuration>
+						<downloadSources>true</downloadSources>
+						<useProjectReferences>false</useProjectReferences>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>false</downloadJavadocs>
+					</configuration>
+				</plugin>
+				
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
