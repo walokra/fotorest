@@ -1,5 +1,6 @@
 package com.ruleoftech.lab.fotorest;
 
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import javax.enterprise.context.SessionScoped;
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ruleoftech.lab.fotorest.model.GalleryAlbum;
 import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
@@ -28,7 +30,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -53,7 +54,10 @@ public class FotorestUI extends UI {
 	private final VerticalLayout left = new VerticalLayout();
 
 	private final VerticalLayout right = new VerticalLayout();
+	private final Label imagesTitle = new Label();
 	private final Image image = new Image();
+	private final VerticalLayout imagesLayout = new VerticalLayout();
+
 	private final Label credits = new Label();
 
 	private final BeanContainer<String, GalleryImage> images = new BeanContainer<String, GalleryImage>(
@@ -113,15 +117,15 @@ public class FotorestUI extends UI {
 		images.setBeanIdProperty("id");
 
 		// creating right side's image panel
-		right.addComponent(image);
-		right.setExpandRatio(image, 1);
-		right.setHeight("100%");
-		right.setMargin(true);
+		initImagePanel();
 
 		// show credits
 		credits.setValue(service.getCredits());
 	}
 
+	/**
+	 * Constructing the header.
+	 */
 	private void initHeader() {
 		header.setWidth("100%");
 
@@ -135,7 +139,7 @@ public class FotorestUI extends UI {
 
 		HorizontalLayout actionLayout = new HorizontalLayout();
 		// Create list button and search field
-		initSearch(actionLayout);
+		initActions(actionLayout);
 		actionLayout.setWidth("33%");
 		actionLayout.setSpacing(true);
 
@@ -149,6 +153,9 @@ public class FotorestUI extends UI {
 		header.addComponent(headerContent);
 	}
 
+	/**
+	 * Constructing the footer.
+	 */
 	private void initFooter() {
 		HorizontalLayout footerLayout = new HorizontalLayout();
 		footerLayout.setWidth("33%");
@@ -171,7 +178,12 @@ public class FotorestUI extends UI {
 		content.addComponent(footerLayout);
 	}
 
-	private void initSearch(HorizontalLayout actionLayout) {
+	/**
+	 * Constructing the actions bar with buttons and search.
+	 * 
+	 * @param actionLayout
+	 */
+	private void initActions(HorizontalLayout actionLayout) {
 		listButton.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -215,6 +227,23 @@ public class FotorestUI extends UI {
 		});
 	}
 
+	/**
+	 * Constructing the right side image panel.
+	 */
+	private void initImagePanel() {
+		right.addComponent(image);
+		right.setExpandRatio(image, 1);
+		right.setHeight("100%");
+		right.setMargin(true);
+
+		right.addComponent(imagesTitle);
+		right.addComponent(imagesLayout);
+		right.setExpandRatio(imagesLayout, 1);
+	}
+
+	/**
+	 * Constructing the left side image list and actions.
+	 */
 	private void initFotoList() {
 		photoList.setContainerDataSource(images);
 		photoList.setVisibleColumns(new String[] { "title", "link" });
@@ -227,31 +256,31 @@ public class FotorestUI extends UI {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				Object itemId = photoList.getValue();
+				image.setSource(null);
+				imagesLayout.removeAllComponents();
+
 				if (itemId != null) {
 					GalleryImage gi = (GalleryImage) ((BeanItem) photoList.getItem(itemId)).getBean();
-					LOGGER.trace("{'method':'photoList.valueChange', 'value':'" + gi.getUrl() + "'}");
+					LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", gi.toString());
+					imagesTitle.setValue(gi.getTitle());
 					if (!gi.isIs_album()) {
 						// Show original image if smaller than large thumbnail (640x640)
-						ExternalResource img;
-						if (gi.getWidth() > 640 || gi.getHeight() > 640) {
-							// LOGGER.trace("{'method':'photoList.valueChange', 'debug':'Showing large thumbnail'}");
-							// Get the image thumbnail
-							String[] tokens = gi.getUrl().split("\\.(?=[^\\.]+$)");
-							img = new ExternalResource(tokens[0] + "l" + "." + tokens[1]);
-						} else {
-							// LOGGER.trace("{'method':'photoList.valueChange', 'debug':'Showing original image'}");
-							image.setWidth(String.valueOf(gi.getWidth()));
-							image.setHeight(String.valueOf(gi.getHeight()));
-							img = new ExternalResource(gi.getUrl());
-						}
-						image.setSource(img);
-						right.addComponent(image);
+						image.setSource(getExternalResourceFromUrl(gi.getUrl(), gi.getWidth(), gi.getHeight()));
+						imagesLayout.addComponent(image);
 					} else {
+						String[] tokens = gi.getUrl().split("\\/(?=[^\\/]+$)");
+						GalleryAlbum album = service.getGalleryAlbum(tokens[1]);
+						LOGGER.trace("{'method':'photoList.album', 'debug':'{}'}", album.toString());
+
+						for (com.ruleoftech.lab.fotorest.model.Image i : Arrays.asList(album.getImages())) {
+							Image image = new Image();
+							image.setSource(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
+							imagesLayout.addComponent(image);
+						}
 						// https://vaadin.com/book/-/page/application.notifications.html
-						Notification.show("Can't show image", "Gallery image is an album",
-								Notification.Type.HUMANIZED_MESSAGE);
+						// Notification.show("Can't show image", "Gallery image is an album",
+						// Notification.Type.HUMANIZED_MESSAGE);
 					}
-					LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", gi.toString());
 				}
 			}
 		});
@@ -260,11 +289,39 @@ public class FotorestUI extends UI {
 		fillPhotolistWithHotImages();
 	}
 
+	/**
+	 * Getting all hot images and populating the images beancontainer.
+	 */
 	private void fillPhotolistWithHotImages() {
 		images.removeAllItems();
 		for (GalleryImage i : service.hotImages()) {
 			images.addBean(i);
 			images.addNestedContainerProperty("link");
+		}
+	}
+
+	/**
+	 * Parsing the image link and creating externalresource.
+	 * 
+	 * @param url
+	 *            link to image like http://i.imgur...
+	 * @param width
+	 *            image's width
+	 * @param height
+	 *            image's height
+	 * @return ExternalResource
+	 */
+	private ExternalResource getExternalResourceFromUrl(String url, Integer width, Integer height) {
+		if (width > 640 || height > 640) {
+			// LOGGER.trace("{'method':'photoList.valueChange', 'debug':'Showing large thumbnail'}");
+			// Get the image thumbnail
+			String[] tokens = url.split("\\.(?=[^\\.]+$)");
+			return new ExternalResource(tokens[0] + "l" + "." + tokens[1]);
+		} else {
+			// LOGGER.trace("{'method':'photoList.valueChange', 'debug':'Showing original image'}");
+			image.setWidth(String.valueOf(width));
+			image.setHeight(String.valueOf(height));
+			return new ExternalResource(url);
 		}
 	}
 }

@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.ruleoftech.lab.fotorest.model.CreditsResponse;
+import com.ruleoftech.lab.fotorest.model.GalleryAlbum;
+import com.ruleoftech.lab.fotorest.model.GalleryAlbumResponse;
 import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.ruleoftech.lab.fotorest.model.GalleryImageResponse;
 
@@ -71,6 +73,37 @@ public class RestService {
 			result = Arrays.asList(giResponse.getData());
 			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':"
 					+ giResponse.getStatus() + ", 'items':" + result.size() + "}}");
+
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+
+		return result;
+	}
+
+	public GalleryAlbum getGalleryAlbum(String galleryId) {
+		LOGGER.trace("{'method':'getGalleryAlbum'}");
+
+		Properties p = readProps();
+		GalleryAlbum result = new GalleryAlbum();
+		try {
+			// RESTeasy
+			ClientRequest req = new ClientRequest(p.get("baseurl").toString() + "/{gallery}");
+			req.pathParameter("gallery", p.get("gallery.album").toString() + "/" + galleryId);
+
+			req.header("Authorization", "Client-ID " + p.get("client.id").toString());
+			req.accept("application/json");
+			LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", req.getUri() + "}");
+
+			ClientResponse<String> res = req.get(String.class);
+			String json = res.getEntity();
+
+			// Parse JSON to Java objects
+			Gson gson = new Gson();
+			GalleryAlbumResponse gaResponse = gson.fromJson(json, GalleryAlbumResponse.class);
+			result = gaResponse.getData();
+			LOGGER.trace("{'method':'getGalleryAlbum', 'result':{'success':" + gaResponse.getSuccess() + ", 'status':"
+					+ gaResponse.getStatus() + ", 'items':" + gaResponse.getData().getImages_count() + "}}");
 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);

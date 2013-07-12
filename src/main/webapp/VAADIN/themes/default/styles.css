@@ -1,2 +1,6 @@
 @import url(../reindeer/styles.css);
 @import url(../reindeer/legacy-styles.css);
+
+.v-slot img {
+	margin-bottom: 10px;	
+}
