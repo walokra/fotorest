@@ -22,6 +22,7 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -71,7 +72,6 @@ public class FotorestUI extends UI {
 	protected void init(VaadinRequest request) {
 		initLayout();
 		initFotoList();
-
 	}
 
 	private void initLayout() {
@@ -132,10 +132,18 @@ public class FotorestUI extends UI {
 		VerticalLayout headerContent = new VerticalLayout();
 
 		HorizontalLayout titleLayout = new HorizontalLayout();
+
+		// Addin logo
+		ThemeResource resource = new ThemeResource("images/fotorest_logo_s.png");
+		Image image = new Image(null, resource);
+		titleLayout.addComponent(image);
+
 		Label title = new Label(bundle.getString("title"));
-		title.setStyleName(Reindeer.LABEL_H1);
+		title.addStyleName("title");
+		title.addStyleName(Reindeer.LABEL_H1);
 		titleLayout.addComponent(title);
 		titleLayout.setWidth("100%");
+		titleLayout.setExpandRatio(title, 1);
 
 		HorizontalLayout actionLayout = new HorizontalLayout();
 		// Create list button and search field
