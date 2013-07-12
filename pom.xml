@@ -13,6 +13,8 @@
 		<vaadin.version>7.1.0</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<slf4j.version>1.7.2</slf4j.version>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    	<buildNumber>${maven.build.timestamp}</buildNumber>
 	</properties>
 	<repositories>
 		<repository>
@@ -30,6 +32,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<!--
 	<pluginRepositories>
 		<pluginRepository>
 			<id>vaadin-snapshots</id>
@@ -42,6 +45,8 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+	 -->
+	 
 	<dependencies>
 		<!-- vaadin core -->
 		<dependency>
@@ -54,21 +59,6 @@
 			<artifactId>vaadin-client-compiled</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
-		<!--
-		  Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
-		  
-		  For widgetset compilation, vaadin-client-compiler is automatically added on the
-		  compilation classpath by vaadin-maven-plugin so normally there is no need for an
-		  explicit dependency.
-		-->
-		<!--
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiler</artifactId>
-			<version>${vaadin.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client</artifactId>
@@ -80,20 +70,12 @@
 			<artifactId>vaadin-push</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-themes</artifactId>
-			<version>${vaadin.version}</version>
-		</dependency>
-		
-		<!-- Vaadin CDI
-		See https://vaadin.com/wiki/-/wiki/Main/Vaadin-CDI-integration
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-cdi</artifactId>
-			<version>1.0.0.alpha1</version>
-		</dependency>
-		-->
+	    <dependency>
+	      <groupId>com.vaadin</groupId>
+	      <artifactId>vaadin-themes</artifactId>
+	      <version>${vaadin.version}</version>
+	      <scope>runtime</scope>
+	    </dependency>
 		
 		<!-- REST -->
 		<dependency>
@@ -106,34 +88,6 @@
 		    <artifactId>resteasy-jackson-provider</artifactId>
 		    <version>2.3.1.GA</version>
 		</dependency>
-		
-		<!-- Jersey 2.0
-			classpath problems with java.lang.NoSuchMethodError: javax.ws.rs.core.MultivaluedMap.addAll(Ljava/lang/Object;[Ljava/lang/Object;)V
-		<dependency>
-		    <groupId>javax.ws.rs</groupId>
-		    <artifactId>javax.ws.rs-api</artifactId>
-		    <version>2.0</version>
-		</dependency>
-
-		<dependency>
-		    <groupId>org.glassfish.jersey.containers</groupId>
-		    <artifactId>jersey-container-servlet</artifactId>
-		    <version>2.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.glassfish.jersey.core</groupId>
-		    <artifactId>jersey-client</artifactId>
-		    <version>2.0</version>
-		</dependency>
-		-->
-		
-		<!-- Jersey 1.x
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-bundle</artifactId>
-			<version>1.17.1</version>
-		</dependency>
-		-->
 		
 		<!--  Gson: Java to Json conversion -->
 		<dependency>
@@ -162,56 +116,37 @@
 			<version>6.0</version>
 			<scope>provided</scope>
 		</dependency>
- 
- 		<!-- If not using javaee-api
- 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-	       <groupId>org.apache.geronimo.specs</groupId>
-	       <artifactId>geronimo-ejb_3.1_spec</artifactId>
-	       <version>1.0</version>
-	       <scope>provided</scope>
-	   </dependency>
-		<dependency>
-		   <groupId>javax.enterprise</groupId>
-		   <artifactId>cdi-api</artifactId>
-		   <scope>provided</scope>
-		   <version>1.1</version>
-		</dependency>
-		<dependency>
-		   <groupId>javax.annotation</groupId>
-		   <artifactId>jsr250-api</artifactId>
-		   <scope>provided</scope>
-		   <version>1.0</version>
-		</dependency>
-		-->
 	</dependencies>
 
 	<build>
+		<resources>
+			<!-- Replace the ${project.version} with real version -->
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>resources_en_US.properties</include>
+				</includes>
+			</resource>
+			<!-- Copy rest so that filtering = false -->
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>resources_en_US.properties</exclude>
+				</excludes>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<!-- As we are doing "inplace" GWT compilation, ensure the widgetset -->
-			<!-- directory is cleaned properly -->
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/webapp/VAADIN/widgetsets</directory>
-						</fileset>
-					</filesets>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -221,49 +156,6 @@
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-maven-plugin</artifactId>
-				<version>${vaadin.plugin.version}</version>
-				<configuration>
-					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-					<!-- <runTarget>mobilemail</runTarget> -->
-					<!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This 
-						way compatible with Vaadin eclipse plugin. -->
-					<webappDirectory>${basedir}/src/main/webapp/VAADIN/widgetsets
-					</webappDirectory>
-					<hostedWebapp>${basedir}/src/main/webapp/VAADIN/widgetsets
-					</hostedWebapp>
-					<noServer>true</noServer>
-					<!-- Remove draftCompile when project is ready -->
-					<draftCompile>false</draftCompile>
-					<compileReport>true</compileReport>
-					<style>OBF</style>
-					<strict>true</strict>
-					<runTarget>http://localhost:8080/</runTarget>
-				</configuration>
-				<executions>
-					<execution>
-						<configuration>
-							<!-- if you don't specify any modules, the plugin will find them -->
-							<!-- <modules> <module>com.vaadin.demo.mobilemail.gwt.ColorPickerWidgetSet</module> 
-								</modules> -->
-						</configuration>
-						<goals>
-							<goal>clean</goal>
-							<goal>resources</goal>
-							<goal>update-theme</goal>
-							<goal>update-widgetset</goal>
-							<goal>compile-theme</goal>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.openejb.maven</groupId>
@@ -287,36 +179,12 @@
 						<downloadJavadocs>false</downloadJavadocs>
 					</configuration>
 				</plugin>
-				
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
 					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.vaadin</groupId>
-										<artifactId>
-											vaadin-maven-plugin
-										</artifactId>
-										<versionRange>
-											[7.1.0,)
-										</versionRange>
-										<goals>
-											<goal>resources</goal>
-											<goal>update-widgetset</goal>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
+						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 			</plugins>

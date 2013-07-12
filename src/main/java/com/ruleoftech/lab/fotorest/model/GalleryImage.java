@@ -153,4 +153,12 @@ public class GalleryImage {
 		this.is_album = is_album;
 	}
 
+	@Override
+	public String toString() {
+		return "GalleryImage [id=" + id + ", title=" + title + ", description=" + description + ", datetime="
+				+ datetime + ", type=" + type + ", animated=" + animated + ", width=" + width + ", height=" + height
+				+ ", size=" + size + ", views=" + views + ", bandwidth=" + bandwidth + ", link=" + link + ", ups="
+				+ ups + ", downs=" + downs + ", score=" + score + ", is_album=" + is_album + "]";
+	}
+
 }

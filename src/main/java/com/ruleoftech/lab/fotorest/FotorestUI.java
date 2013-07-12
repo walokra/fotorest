@@ -1,5 +1,7 @@
 package com.ruleoftech.lab.fotorest;
 
+import java.util.ResourceBundle;
+
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -17,6 +19,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -25,10 +28,12 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 @Title("Fotorest")
 @SessionScoped
@@ -39,7 +44,8 @@ public class FotorestUI extends UI {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FotorestUI.class);
 
-	private final HorizontalLayout top = new HorizontalLayout();
+	private final HorizontalLayout header = new HorizontalLayout();
+	private final VerticalLayout content = new VerticalLayout();
 	private final Button listButton = new Button("Hot");
 	private final Button randomButton = new Button("Rnd");
 	private final TextField searchField = new TextField();
@@ -48,11 +54,11 @@ public class FotorestUI extends UI {
 
 	private final VerticalLayout right = new VerticalLayout();
 	private final Embedded image = new Embedded();
-	private final HorizontalLayout rightBottom = new HorizontalLayout();
 	private final Label credits = new Label();
 
-	BeanContainer<String, GalleryImage> images = new BeanContainer<String, GalleryImage>(GalleryImage.class);
-	// Container images = new IndexedContainer();
+	private final BeanContainer<String, GalleryImage> images = new BeanContainer<String, GalleryImage>(
+			GalleryImage.class);
+	private final ResourceBundle bundle = ResourceBundle.getBundle("resources");
 
 	@Inject
 	private RestService service;
@@ -61,40 +67,112 @@ public class FotorestUI extends UI {
 	protected void init(VaadinRequest request) {
 		initLayout();
 		initFotoList();
+
 	}
 
 	private void initLayout() {
-		HorizontalSplitPanel split = new HorizontalSplitPanel();
-		setContent(split);
+		// main container
+		VerticalLayout container = new VerticalLayout();
+		container.setSizeFull();
+		setContent(container);
+		container.setMargin(true);
 
+		// header
+		container.addComponent(header);
+		initHeader();
+
+		// main content which contains photolist and image panel
+		content.setSizeFull();
+		container.addComponent(content);
+
+		// split panel in main content for photolist and image panel
+		HorizontalSplitPanel split = new HorizontalSplitPanel();
+		content.addComponent(split);
+
+		// header is 1:10 of the full container
+		// container.setExpandRatio(header, 1);
+		container.setExpandRatio(content, 1);
+		content.setExpandRatio(split, 1);
+
+		// Adding panels to split container
 		split.addComponent(left);
 		split.addComponent(right);
-		left.addComponent(top);
 		left.addComponent(photoList);
 
-		// Create list button and search field
-		initSearch();
-
 		left.setSizeFull();
-		left.setExpandRatio(photoList, 1);
+		left.setExpandRatio(photoList, 1); // photolist expands
 		photoList.setSizeFull();
 
 		split.setSplitPosition(33f);
 		split.setSizeFull();
 
-		// set container
+		// setting footer for version info
+		initFooter();
+
+		// set container for gallery data
 		images.setBeanIdProperty("id");
 
+		// creating right side's image panel
 		right.addComponent(image);
-		right.addComponent(rightBottom);
 		right.setExpandRatio(image, 1);
 		image.setSizeFull();
+		right.setHeight("100%");
 		right.setMargin(true);
 
-		rightBottom.addComponent(credits);
+		// show credits
+		credits.setValue(service.getCredits());
 	}
 
-	private void initSearch() {
+	private void initHeader() {
+		header.setWidth("100%");
+
+		VerticalLayout headerContent = new VerticalLayout();
+
+		HorizontalLayout titleLayout = new HorizontalLayout();
+		Label title = new Label(bundle.getString("title"));
+		title.setStyleName(Reindeer.LABEL_H1);
+		titleLayout.addComponent(title);
+		titleLayout.setWidth("100%");
+
+		HorizontalLayout actionLayout = new HorizontalLayout();
+		// Create list button and search field
+		initSearch(actionLayout);
+		actionLayout.setWidth("33%");
+		actionLayout.setSpacing(true);
+
+		HorizontalLayout infoLayout = new HorizontalLayout();
+		infoLayout.setWidth("33%");
+
+		headerContent.addComponent(titleLayout);
+		headerContent.addComponent(actionLayout);
+		headerContent.addComponent(infoLayout);
+
+		header.addComponent(headerContent);
+	}
+
+	private void initFooter() {
+		HorizontalLayout footerLayout = new HorizontalLayout();
+		footerLayout.setWidth("33%");
+
+		credits.setWidth("100%");
+		footerLayout.addComponent(credits);
+
+		Label version = new Label(bundle.getString("version"));
+		footerLayout.addComponent(version);
+		Label sep = new Label(" | ");
+		sep.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PERCENTAGE);
+		footerLayout.addComponent(sep);
+		version.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PERCENTAGE);
+		Label build = new Label(bundle.getString("version.build"));
+		footerLayout.addComponent(build);
+		build.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PERCENTAGE);
+
+		footerLayout.setExpandRatio(credits, 1);
+
+		content.addComponent(footerLayout);
+	}
+
+	private void initSearch(HorizontalLayout actionLayout) {
 		listButton.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -104,10 +182,11 @@ public class FotorestUI extends UI {
 					images.addBean(i);
 					images.addNestedContainerProperty("link");
 				}
-				credits.setValue(service.getCredits());
+				// credits.setValue(service.getCredits());
 			}
 		});
-		top.addComponent(listButton);
+		listButton.setDescription("Show images of today, sorted by popularity");
+		actionLayout.addComponent(listButton);
 
 		randomButton.addClickListener(new ClickListener() {
 			@Override
@@ -118,17 +197,17 @@ public class FotorestUI extends UI {
 					images.addBean(i);
 					images.addNestedContainerProperty("link");
 				}
-				credits.setValue(service.getCredits());
+				// credits.setValue(service.getCredits());
 			}
 		});
-		top.addComponent(randomButton);
+		randomButton.setDescription("Show random set of gallery images");
+		actionLayout.addComponent(randomButton);
 
 		searchField.setInputPrompt("Search imgur");
-		top.addComponent(searchField);
+		actionLayout.addComponent(searchField);
 
-		top.setWidth("100%");
 		searchField.setWidth("100%");
-		top.setExpandRatio(searchField, 1);
+		actionLayout.setExpandRatio(searchField, 1);
 
 		searchField.addShortcutListener(new ShortcutListener("Default action", ShortcutAction.KeyCode.ENTER, null) {
 			@Override
@@ -139,7 +218,7 @@ public class FotorestUI extends UI {
 					images.addBean(i);
 					images.addNestedContainerProperty("link");
 				}
-				credits.setValue(service.getCredits());
+				// credits.setValue(service.getCredits());
 			}
 		});
 	}
@@ -164,8 +243,12 @@ public class FotorestUI extends UI {
 						ExternalResource img = new ExternalResource(tokens[0] + "l" + "." + tokens[1]);
 						image.setSource(img);
 						right.addComponent(image);
+					} else {
+						// https://vaadin.com/book/-/page/application.notifications.html
+						Notification.show("Can't show image", "Gallery image is an album",
+								Notification.Type.HUMANIZED_MESSAGE);
 					}
-					LOGGER.trace("{'method':'photoList.valueChange', 'debug':'is_album=" + gi.isIs_album() + "'}");
+					LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", gi.toString());
 				}
 			}
 		});

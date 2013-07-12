@@ -65,45 +65,6 @@ public class RestService {
 			ClientResponse<String> res = req.get(String.class);
 			String json = res.getEntity();
 
-			// Jersey 1.17
-			// Client client = Client.create();
-			// WebResource res = client.resource(p.get("baseurl").toString());
-			// res.accept(MediaType.APPLICATION_JSON);
-			// res.header("Authorization: Client-ID ", p.get("client.id").toString());
-			//
-			// if (random) {
-			// res.path(p.get("gallery.random").toString());
-			// } else if (query != null && !query.isEmpty()) {
-			// res.path(p.get("gallery.search").toString() + query);
-			// } else {
-			// res.path(p.get("gallery.hot").toString());
-			// }
-			// LOGGER.trace("{'method':'listImages', 'Uri':'{}'", res.getURI() + "}");
-			//
-			// String json = res.get(String.class);
-
-			// Jersey 2.0
-			// Client client = ClientBuilder.newClient();
-			// WebTarget base = client.target(p.get("baseurl").toString());
-			//
-			// WebTarget res;
-			// if (random) {
-			// res = base.path(p.get("gallery.random").toString());
-			// } else if (query != null && !query.isEmpty()) {
-			// res = base.path(p.get("gallery.search").toString());
-			// res.queryParam("q", query);
-			// } else {
-			// res = base.path(p.get("gallery.hot").toString());
-			// }
-			// LOGGER.trace("{'method':'listImages', 'Uri':'{}'", res.getUri() + "}");
-			//
-			// Invocation.Builder invocationBuilder = res.request(MediaType.TEXT_PLAIN_TYPE);
-			// invocationBuilder.header("Authorization: Client-ID ", p.get("client.id").toString());
-			//
-			// Response response = invocationBuilder.get();
-			// LOGGER.trace("{'method':'listImages', 'debug':{" + response.getStatus() + "}}");
-			// String json = response.readEntity(String.class);
-
 			// Parse JSON to Java objects
 			Gson gson = new Gson();
 			GalleryImageResponse giResponse = gson.fromJson(json, GalleryImageResponse.class);
@@ -129,20 +90,6 @@ public class RestService {
 
 			ClientResponse<String> res = req.get(String.class);
 			String json = res.getEntity();
-
-			// Jersey 1.17
-			// Client client = Client.create();
-			// WebResource service = client.resource("https://api.imgur.com/3/credits");
-			// service.accept(MediaType.APPLICATION_JSON);
-			// service.header("Authorization: Client-ID ", p.get("client.id").toString());
-			// String json = service.get(String.class);
-
-			// Jersey 2.0
-			// Client client = ClientBuilder.newClient();
-			// WebTarget res = client.target("https://api.imgur.com/3/credits");
-			// Invocation.Builder invocationBuilder = res.request(MediaType.TEXT_PLAIN_TYPE);
-			// invocationBuilder.header("Authorization: Client-ID ", p.get("client.id").toString());
-			// String json = invocationBuilder.get().readEntity(String.class);
 
 			LOGGER.trace("{'method':'getCredits', 'response':{}}", json);
 
