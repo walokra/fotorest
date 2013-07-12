@@ -24,9 +24,9 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
@@ -53,7 +53,7 @@ public class FotorestUI extends UI {
 	private final VerticalLayout left = new VerticalLayout();
 
 	private final VerticalLayout right = new VerticalLayout();
-	private final Embedded image = new Embedded();
+	private final Image image = new Image();
 	private final Label credits = new Label();
 
 	private final BeanContainer<String, GalleryImage> images = new BeanContainer<String, GalleryImage>(
@@ -115,7 +115,6 @@ public class FotorestUI extends UI {
 		// creating right side's image panel
 		right.addComponent(image);
 		right.setExpandRatio(image, 1);
-		image.setSizeFull();
 		right.setHeight("100%");
 		right.setMargin(true);
 
@@ -177,12 +176,7 @@ public class FotorestUI extends UI {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				LOGGER.trace("{'method':'listButton.buttonClick'}");
-				images.removeAllItems();
-				for (GalleryImage i : service.hotImages()) {
-					images.addBean(i);
-					images.addNestedContainerProperty("link");
-				}
-				// credits.setValue(service.getCredits());
+				fillPhotolistWithHotImages();
 			}
 		});
 		listButton.setDescription("Show images of today, sorted by popularity");
@@ -197,7 +191,6 @@ public class FotorestUI extends UI {
 					images.addBean(i);
 					images.addNestedContainerProperty("link");
 				}
-				// credits.setValue(service.getCredits());
 			}
 		});
 		randomButton.setDescription("Show random set of gallery images");
@@ -218,7 +211,6 @@ public class FotorestUI extends UI {
 					images.addBean(i);
 					images.addNestedContainerProperty("link");
 				}
-				// credits.setValue(service.getCredits());
 			}
 		});
 	}
@@ -239,8 +231,19 @@ public class FotorestUI extends UI {
 					GalleryImage gi = (GalleryImage) ((BeanItem) photoList.getItem(itemId)).getBean();
 					LOGGER.trace("{'method':'photoList.valueChange', 'value':'" + gi.getUrl() + "'}");
 					if (!gi.isIs_album()) {
-						String[] tokens = gi.getUrl().split("\\.(?=[^\\.]+$)");
-						ExternalResource img = new ExternalResource(tokens[0] + "l" + "." + tokens[1]);
+						// Show original image if smaller than large thumbnail (640x640)
+						ExternalResource img;
+						if (gi.getWidth() > 640 || gi.getHeight() > 640) {
+							// LOGGER.trace("{'method':'photoList.valueChange', 'debug':'Showing large thumbnail'}");
+							// Get the image thumbnail
+							String[] tokens = gi.getUrl().split("\\.(?=[^\\.]+$)");
+							img = new ExternalResource(tokens[0] + "l" + "." + tokens[1]);
+						} else {
+							// LOGGER.trace("{'method':'photoList.valueChange', 'debug':'Showing original image'}");
+							image.setWidth(String.valueOf(gi.getWidth()));
+							image.setHeight(String.valueOf(gi.getHeight()));
+							img = new ExternalResource(gi.getUrl());
+						}
 						image.setSource(img);
 						right.addComponent(image);
 					} else {
@@ -252,5 +255,16 @@ public class FotorestUI extends UI {
 				}
 			}
 		});
+
+		// fill the list with images
+		fillPhotolistWithHotImages();
+	}
+
+	private void fillPhotolistWithHotImages() {
+		images.removeAllItems();
+		for (GalleryImage i : service.hotImages()) {
+			images.addBean(i);
+			images.addNestedContainerProperty("link");
+		}
 	}
 }

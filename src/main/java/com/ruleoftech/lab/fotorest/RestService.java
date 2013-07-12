@@ -95,8 +95,8 @@ public class RestService {
 
 			Gson gson = new Gson();
 			CreditsResponse response = gson.fromJson(json, CreditsResponse.class);
-			LOGGER.trace("{'method':'getCredits', 'result':{'success':{}, 'status':{}}}", response.getSuccess(),
-					response.getStatus());
+			// LOGGER.trace("{'method':'getCredits', 'result':{'success':{}, 'status':{}}}", response.getSuccess(),
+			// response.getStatus());
 			StringBuilder sb = new StringBuilder();
 			sb.append("client=");
 			sb.append(response.getData().getClientRemaining());

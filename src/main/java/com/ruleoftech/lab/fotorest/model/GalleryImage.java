@@ -109,10 +109,20 @@ public class GalleryImage {
 		this.bandwidth = bandwidth;
 	}
 
+	/**
+	 * Link component with URL as title.
+	 * 
+	 * @return
+	 */
 	public Link getLink() {
 		return new Link(link, new ExternalResource(link));
 	}
 
+	/**
+	 * URL to the image, e.g. http://http://i.imgur.com/foobar.jpg.
+	 * 
+	 * @return
+	 */
 	public String getUrl() {
 		return link;
 	}
