@@ -240,10 +240,10 @@ public class FotorestUI extends UI {
 	 */
 	private void initImagePanel() {
 		right.addComponent(image);
-		right.setExpandRatio(image, 1);
-		right.setHeight("100%");
+		right.setWidth("100%");
 		right.setMargin(true);
 
+		imagesLayout.setSizeFull();
 		right.addComponent(imagesTitle);
 		right.addComponent(imagesLayout);
 		right.setExpandRatio(imagesLayout, 1);
@@ -265,6 +265,8 @@ public class FotorestUI extends UI {
 			public void valueChange(ValueChangeEvent event) {
 				Object itemId = photoList.getValue();
 				image.setSource(null);
+				image.setWidth(null);
+				image.setHeight(null);
 				imagesLayout.removeAllComponents();
 
 				if (itemId != null) {
@@ -290,6 +292,19 @@ public class FotorestUI extends UI {
 						// Notification.Type.HUMANIZED_MESSAGE);
 					}
 				}
+			}
+		});
+		
+		photoList.addShortcutListener(new ShortcutListener("Next image in table", ShortcutAction.KeyCode.ARROW_DOWN, null) {
+			@Override
+			public void handleAction(Object sender, Object target) {
+				photoList.setValue(photoList.nextItemId(photoList.getValue()));
+			}
+		});
+		photoList.addShortcutListener(new ShortcutListener("Previous image in table", ShortcutAction.KeyCode.ARROW_UP, null) {
+			@Override
+			public void handleAction(Object sender, Object target) {
+				photoList.setValue(photoList.prevItemId(photoList.getValue()));
 			}
 		});
 
