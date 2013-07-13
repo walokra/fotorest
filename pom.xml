@@ -12,6 +12,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<vaadin.version>7.1.0</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
+		<cxf.version>2.2.3</cxf.version>
+		<!--<resteasy.version>2.3.6.Final</resteasy.version>-->
 		<slf4j.version>1.7.2</slf4j.version>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     	<buildNumber>${maven.build.timestamp}</buildNumber>
@@ -32,20 +34,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	<!--
-	<pluginRepositories>
-		<pluginRepository>
-			<id>vaadin-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-	 -->
 	 
 	<dependencies>
 		<!-- vaadin core -->
@@ -77,19 +65,31 @@
 	      <scope>runtime</scope>
 	    </dependency>
 		
-		<!-- REST -->
+		<!-- REST: Apache CXF comes with TomEE+ -->
 		<dependency>
-		    <groupId>org.jboss.resteasy</groupId>
-		    <artifactId>resteasy-jaxrs</artifactId>
-		    <version>2.3.1.GA</version>
-		</dependency>
+	        <groupId>org.apache.cxf</groupId>
+	        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+	        <version>${cxf.version}</version>
+	        <scope>provided</scope>
+	    </dependency>
+	    
+		<!-- RESTEasy (provided with JBOSS)-->
+		<!-- core library
 		<dependency>
-		    <groupId>org.jboss.resteasy</groupId>
-		    <artifactId>resteasy-jackson-provider</artifactId>
-		    <version>2.3.1.GA</version>
+		   <groupId>org.jboss.resteasy</groupId>
+		   <artifactId>resteasy-jaxrs</artifactId>
+		   <version>${resteasy.version}</version>
 		</dependency>
-		
-		<!--  Gson: Java to Json conversion -->
+		-->
+		<!-- if using 3.x
+		<dependency>
+		   <groupId>org.jboss.resteasy</groupId>
+		   <artifactId>resteasy-client</artifactId>
+		   <version>${resteasy.version}</version>
+		</dependency>
+		-->
+	       
+		<!--  Gson: Java to Json to Java conversion -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -98,11 +98,13 @@
 		</dependency>
 
 		<!-- Logging -->
+		<!-- comes with slf4j-log4j12
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -145,8 +147,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>

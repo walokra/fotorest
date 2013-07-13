@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
+import javax.ws.rs.core.MediaType;
 
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,30 +49,50 @@ public class RestService {
 		Properties p = readProps();
 
 		List<GalleryImage> result = new ArrayList<GalleryImage>();
+
+		// Apache CXF
+		// http://cxf.apache.org/docs/jax-rs-client-api.html
+		WebClient client = WebClient.create(p.get("baseurl").toString());
+		if (random) {
+			client.path(p.get("gallery.random").toString());
+		} else if (query != null && !query.isEmpty()) {
+			client.path(p.get("gallery.search").toString());
+			client.query("q", query);
+		} else {
+			client.path(p.get("gallery.hot").toString());
+		}
+		client.header("Authorization", "Client-ID " + p.get("client.id").toString());
+		client.accept(MediaType.APPLICATION_JSON);
+		String json = client.get(String.class);
+		LOGGER.trace("{'method':'listImages', 'Uri':'{}'", client.getCurrentURI() + "}");
+
+		// // RESTeasy
+		// ClientRequest req = new ClientRequest(p.get("baseurl").toString() +
+		// "/{gallery}");
+		// if (random) {
+		// req.pathParameter("gallery", p.get("gallery.random").toString());
+		// } else if (query != null && !query.isEmpty()) {
+		// req.pathParameter("gallery", p.get("gallery.search").toString());
+		// req.queryParameter("q", query);
+		// } else {
+		// req.pathParameter("gallery", p.get("gallery.hot").toString());
+		// }
+		// req.header("Authorization", "Client-ID " +
+		// p.get("client.id").toString());
+		// req.accept("application/json");
+		// LOGGER.trace("{'method':'listImages', 'Uri':'{}'", req.getUri() +
+		// "}");
+		//
+		// ClientResponse<String> res = req.get(String.class);
+		// String json = res.getEntity();
+
 		try {
-			// RESTeasy
-			ClientRequest req = new ClientRequest(p.get("baseurl").toString() + "/{gallery}");
-			if (random) {
-				req.pathParameter("gallery", p.get("gallery.random").toString());
-			} else if (query != null && !query.isEmpty()) {
-				req.pathParameter("gallery", p.get("gallery.search").toString());
-				req.queryParameter("q", query);
-			} else {
-				req.pathParameter("gallery", p.get("gallery.hot").toString());
-			}
-			req.header("Authorization", "Client-ID " + p.get("client.id").toString());
-			req.accept("application/json");
-			LOGGER.trace("{'method':'listImages', 'Uri':'{}'", req.getUri() + "}");
-
-			ClientResponse<String> res = req.get(String.class);
-			String json = res.getEntity();
-
 			// Parse JSON to Java objects
 			Gson gson = new Gson();
 			GalleryImageResponse giResponse = gson.fromJson(json, GalleryImageResponse.class);
 			result = Arrays.asList(giResponse.getData());
-			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':"
-					+ giResponse.getStatus() + ", 'items':" + result.size() + "}}");
+			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':" + giResponse.getStatus()
+					+ ", 'items':" + result.size() + "}}");
 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -86,18 +106,31 @@ public class RestService {
 
 		Properties p = readProps();
 		GalleryAlbum result = new GalleryAlbum();
+
+		// Apache CXF
+		WebClient client = WebClient.create(p.get("baseurl").toString());
+		client.path(p.get("gallery.album").toString() + "/" + galleryId);
+		client.header("Authorization", "Client-ID " + p.get("client.id").toString());
+		client.accept(MediaType.APPLICATION_JSON);
+		String json = client.get(String.class);
+		LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", client.getCurrentURI() + "}");
+
+		// RESTeasy
+		// ClientRequest req = new ClientRequest(p.get("baseurl").toString() +
+		// "/{gallery}");
+		// req.pathParameter("gallery", p.get("gallery.album").toString() + "/"
+		// + galleryId);
+		//
+		// req.header("Authorization", "Client-ID " +
+		// p.get("client.id").toString());
+		// req.accept("application/json");
+		// LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", req.getUri()
+		// + "}");
+		//
+		// ClientResponse<String> res = req.get(String.class);
+		// String json = res.getEntity();
+
 		try {
-			// RESTeasy
-			ClientRequest req = new ClientRequest(p.get("baseurl").toString() + "/{gallery}");
-			req.pathParameter("gallery", p.get("gallery.album").toString() + "/" + galleryId);
-
-			req.header("Authorization", "Client-ID " + p.get("client.id").toString());
-			req.accept("application/json");
-			LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", req.getUri() + "}");
-
-			ClientResponse<String> res = req.get(String.class);
-			String json = res.getEntity();
-
 			// Parse JSON to Java objects
 			Gson gson = new Gson();
 			GalleryAlbumResponse gaResponse = gson.fromJson(json, GalleryAlbumResponse.class);
@@ -115,20 +148,30 @@ public class RestService {
 	public String getCredits() {
 		Properties p = readProps();
 
+		// Apache CXF
+		WebClient client = WebClient.create("https://api.imgur.com/3/credits");
+		// client.path("bookstore/books");
+		client.header("Authorization", "Client-ID " + p.get("client.id").toString());
+		client.accept(MediaType.APPLICATION_JSON);
+		String json = client.get(String.class);
+
+		// RESTEasy
+		// ClientRequest req = new
+		// ClientRequest("https://api.imgur.com/3/credits");
+		// req.header("Authorization", "Client-ID " +
+		// p.get("client.id").toString());
+		// req.accept("application/json");
+		//
+		// ClientResponse<String> res = req.get(String.class);
+		// String json = res.getEntity();
+
+		LOGGER.trace("{'method':'getCredits', 'response':{}}", json);
+
 		try {
-			// RESTEasy
-			ClientRequest req = new ClientRequest("https://api.imgur.com/3/credits");
-			req.header("Authorization", "Client-ID " + p.get("client.id").toString());
-			req.accept("application/json");
-
-			ClientResponse<String> res = req.get(String.class);
-			String json = res.getEntity();
-
-			LOGGER.trace("{'method':'getCredits', 'response':{}}", json);
-
 			Gson gson = new Gson();
 			CreditsResponse response = gson.fromJson(json, CreditsResponse.class);
-			// LOGGER.trace("{'method':'getCredits', 'result':{'success':{}, 'status':{}}}", response.getSuccess(),
+			// LOGGER.trace("{'method':'getCredits', 'result':{'success':{}, 'status':{}}}",
+			// response.getSuccess(),
 			// response.getStatus());
 			StringBuilder sb = new StringBuilder();
 			sb.append("client=");

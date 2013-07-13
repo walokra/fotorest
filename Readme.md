@@ -6,21 +6,24 @@ Technologies
 
 * Vaadin 7
 * Java EE 6
-* RESTEasy
+* Apache CXF (http://cxf.apache.org/) or RESTEasy (http://www.jboss.org/resteasy)
 * GSON
 
 Prerequirements
 ---------------
 
 To use imgur API you need to register your app: https://api.imgur.com/oauth2/addclient
+
 * Fill in the values client.id and client.secret in runtime.properties
 
+If using TomEE web profile
+
+* Remove the scope of apache.cxf depencies as they don't come with web profile.
+
 Run
-======================
-mvn install tomee:run
-
-http://localhost:8080/fotorest-0.1-SNAPSHOT
-
+---------------
+From the terminal: mvn tomee:run
 Or directly from Eclipse with TomEE
 
-http://localhost:8080/fotorest
+http://localhost:8080/fotorest-vaadin
+
