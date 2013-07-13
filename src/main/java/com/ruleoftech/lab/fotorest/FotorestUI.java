@@ -3,7 +3,6 @@ package com.ruleoftech.lab.fotorest;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -11,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.ruleoftech.lab.fotorest.model.GalleryAlbum;
 import com.ruleoftech.lab.fotorest.model.GalleryImage;
-import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.cdi.CDIUI;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
@@ -38,8 +37,10 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 @Title("Fotorest")
-@SessionScoped
-@PreserveOnRefresh
+// If using JEE6 (problems with UI id)
+// @SessionScoped
+// @PreserveOnRefresh
+@CDIUI
 @Theme("default")
 @SuppressWarnings("serial")
 public class FotorestUI extends UI {
