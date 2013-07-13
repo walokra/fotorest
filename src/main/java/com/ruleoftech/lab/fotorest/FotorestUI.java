@@ -294,14 +294,16 @@ public class FotorestUI extends UI {
 				}
 			}
 		});
-		
-		photoList.addShortcutListener(new ShortcutListener("Next image in table", ShortcutAction.KeyCode.ARROW_DOWN, null) {
+
+		photoList.addShortcutListener(new ShortcutListener("Next image in table", ShortcutAction.KeyCode.ARROW_DOWN,
+				null) {
 			@Override
 			public void handleAction(Object sender, Object target) {
 				photoList.setValue(photoList.nextItemId(photoList.getValue()));
 			}
 		});
-		photoList.addShortcutListener(new ShortcutListener("Previous image in table", ShortcutAction.KeyCode.ARROW_UP, null) {
+		photoList.addShortcutListener(new ShortcutListener("Previous image in table", ShortcutAction.KeyCode.ARROW_UP,
+				null) {
 			@Override
 			public void handleAction(Object sender, Object target) {
 				photoList.setValue(photoList.prevItemId(photoList.getValue()));
