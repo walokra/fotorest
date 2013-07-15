@@ -1,14 +1,18 @@
 package com.ruleoftech.lab.fotorest;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.component.graphicimage.GraphicImage;
+import org.primefaces.component.outputpanel.OutputPanel;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.ruleoftech.lab.fotorest.model.GalleryAlbum;
 import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.ruleoftech.lab.fotorest.model.GalleryImageDataModel;
+import com.ruleoftech.lab.fotorest.model.Image;
 import com.ruleoftech.lab.fotorest.services.RestService;
 
 @SuppressWarnings("serial")
@@ -32,7 +37,10 @@ public class BrowserBean implements Serializable {
 	private GalleryImage selectedImage;
 	private GalleryImageDataModel dataModel;
 
-	private String search;
+	private String query;
+	private String credits;
+
+	private OutputPanel imagePanel;
 
 	@PostConstruct
 	public void init() {
@@ -42,42 +50,63 @@ public class BrowserBean implements Serializable {
 		if (dataModel == null) {
 			this.dataModel = new GalleryImageDataModel(service.hotImages());
 		}
+		credits = service.getCredits();
+		imagePanel = new OutputPanel();
 	}
 
 	public void hot() {
 		FacesMessage msg = new FacesMessage("Fetching hot images");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		// TODO: actually get hot images and update datamodel
+		this.dataModel = new GalleryImageDataModel(service.hotImages());
 	}
 
 	public void random() {
 		FacesMessage msg = new FacesMessage("Fetching random images");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		// TODO: actually get random images and update datamodel
+		this.dataModel = new GalleryImageDataModel(service.randomImages());
+	}
+
+	public void search() {
+		LOGGER.trace("{'method':'search', 'debug':''}");
+
+		FacesMessage msg = new FacesMessage("Searching images");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		this.dataModel = new GalleryImageDataModel(service.searchImages(query));
 	}
 
 	public void onRowSelect(SelectEvent event) {
 		selectedImage = (GalleryImage) event.getObject();
+		imagePanel = new OutputPanel();
 
 		if (selectedImage != null) {
 			LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", selectedImage.toString());
 			if (!selectedImage.isIs_album()) {
 				// Show original image if smaller than large thumbnail (640x640)
-				selectedImage.setLink(getExternalResourceFromUrl(selectedImage.getLink(), selectedImage.getWidth(),
+				// selectedImage.setLink(getExternalResourceFromUrl(selectedImage.getLink(), selectedImage.getWidth(),
+				// selectedImage.getHeight()));
+				GraphicImage image = new GraphicImage();
+				image.setUrl(getExternalResourceFromUrl(selectedImage.getLink(), selectedImage.getWidth(),
 						selectedImage.getHeight()));
+				imagePanel.getChildren().add(image);
 			} else {
 				String[] tokens = selectedImage.getLink().split("\\/(?=[^\\/]+$)");
 				GalleryAlbum album = service.getGalleryAlbum(tokens[1]);
 				LOGGER.trace("{'method':'onRowSelect.album', 'debug':'{}'}", album.toString());
 
-				// TODO: implement showing galley albums' images
+				for (Image i : Arrays.asList(album.getImages())) {
+					GraphicImage image = new GraphicImage();
+					image.setUrl(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
+					image.setStyle("padding: 5px; clear: both;");
+					imagePanel.getChildren().add(image);
 
-				FacesMessage facesMessage = new FacesMessage("Can't show image!",
-						"Support for Gallery Albums isn't implemented");
-				facesMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-				FacesContext.getCurrentInstance().addMessage(null, facesMessage);
+					HtmlOutputText title = new HtmlOutputText();
+					title.setValue(i.getTitle());
+					title.setStyle("padding: 5px; display: block;");
+					imagePanel.getChildren().add(title);
+				}
 			}
 		}
 	}
@@ -117,12 +146,24 @@ public class BrowserBean implements Serializable {
 		return dataModel;
 	}
 
-	public String getSearch() {
-		return search;
+	public String getQuery() {
+		return query;
 	}
 
-	public void setSearch(String search) {
-		this.search = search;
+	public void setQuery(String query) {
+		this.query = query;
+	}
+
+	public String getCredits() {
+		return credits;
+	}
+
+	public OutputPanel getImagePanel() {
+		return imagePanel;
+	}
+
+	public void setImagePanel(OutputPanel imagePanel) {
+		this.imagePanel = imagePanel;
 	}
 
 }

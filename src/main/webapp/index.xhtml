@@ -8,32 +8,58 @@
 	xmlns:p="http://primefaces.org/ui">
  
     <h:head>
-        <title>Fotorest</title>
+        <title>#{msgs['title']}</title>
         <style type="text/css">
-        	html,body { height: 100%; margin: 0px; padding: 0px; }
+        	html{min-height:100%; position:relative; margin: 0px; padding: 0px;}
+        	body{height: 100%;}
         	body, input, textarea, button {
 				color: #333;
 				font: 11px Helmet, Freesans, sans-serif;
 			}
         	.container {
-        		margin: 0 auto;
+        		position: fixed;
+        		top: 0; left: 0; bottom: 0; right: 0;
+        		min-height: 100%;
+        		height: auto !important;
+				height: 100%;
+				margin: 0 auto;
         		padding: 10px;
         	}
         	.header {
-        		width: 100%;
+        		position:relative;
+				top:0;
         		height: 75px;
         	}
         	.content {
         	}
         	.left {
+				position: fixed;
+        		top: 80px;
+        		bottom: 25px;
         		width: 33%;
-        		float: left;
+        		overflow: auto;
         	}
+        		.search {
+        			width: 24%;
+        		}
         	.right {
-        		margin-left: 10px;
-        		width: 66%;
-        		float: left;
+        		position: fixed;
+        		top: 80px;
+        		left: 34%;
+        		width: 64%;
+        		height: auto;
+        		bottom: 25px;
+        		padding: 0 10px 25px 10px;
+        		overflow: auto;
         	}
+	       	.footer {
+	       		position: fixed;
+	       		width: 33%;
+	       		bottom: 0;
+	       		left: 0;
+	       		right: 0;
+	       		padding: 10px;
+	       	}
         </style>
     </h:head>
     
@@ -41,27 +67,31 @@
 		<div class="container">
 		<div class="header">
 			<h:form id="headerForm">
-			<h1><h:outputText value="#{msgs['title']}" /></h1>
-			
-			<p:commandButton value="#{msgs['action.hot']}" update=":form:growl" 
+			<img style="float: left; margin-right: 10px;" src="images/fotorest_logo_s.png" alt="logo" />
+			<h1 style="margin-top: 2px;"><h:outputText value="#{msgs['title']}" /></h1>
+
+			<p:commandButton value="search" id="searchBtnHidden" actionListener="#{browserBean.search}" 
+				update=":form:dataTable" style="display: none;"/>			
+			<p:commandButton value="#{msgs['action.hot']}" update=":form:dataTable" 
 				actionListener="#{browserBean.hot}" id="btnHotSubmit"/>
-			<p:commandButton value="#{msgs['action.random']}" update=":form:growl" 
+			<p:commandButton value="#{msgs['action.random']}" update=":form:dataTable" 
 				actionListener="#{browserBean.random}" id="btnRndSubmit"/>
-			<p:inputText label="search" id="search" value="#{browserBean.search}"></p:inputText>
-			<p:watermark for="search" value="Search" />
+			<p:inputText label="search" styleClass="search" id="search" value="#{browserBean.query}"/>
+			<p:watermark for="search" value="#{msgs['action.search.watermark']}"/>
+			<p:defaultCommand target="searchBtnHidden"/>
 			</h:form>
 		</div>
 		
 		<div class="content">
 			<h:form id="form">
 			
-			<p:growl id="growl" showDetail="true"/>
+			<p:growl id="growl" autoUpdate="true" showDetail="true"/>
 			
 			<div class="left">
 				<p:dataTable id="dataTable" var="image" value="#{browserBean.dataModel}"   
-						scrollRows="50" scrollable="true" liveScroll="true" scrollHeight="640" 
+						scrollRows="50" scrollable="true" liveScroll="true" scrollHeight="100%" 
 						selection="#{browserBean.selectedImage}" selectionMode="single" rowKey="#{image.id}">
-					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display :form:growl" />
+					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display :form:growl"/>
 					<p:column headerText="Title">
 					   #{image.title}  
 					</p:column>
@@ -69,12 +99,20 @@
 					    <h:outputLink value="#{image.link}"><h:outputText value="#{image.link}" /></h:outputLink>  
 					</p:column>
 				</p:dataTable>
-			
 			</div>
+			
 	 		<div class="right">
-				 <h:panelGroup id="display">
-					<p:graphicImage value="#{browserBean.selectedImage.link}"/>				
-				 </h:panelGroup>
+				<h:panelGroup id="display">
+					<h3><h:outputText value="#{browserBean.selectedImage.title}" /></h3>
+					<p:outputPanel id="imagePanel" binding="#{browserBean.imagePanel}" />
+				</h:panelGroup>
+			</div>
+			
+			<div class="footer">
+				<h:outputText value="#{browserBean.credits}" />
+				<div style="float: right">
+					<h:outputText value="#{msgs['version']}" /> | <h:outputText value="#{msgs['version.build']}" />
+				</div>
 			</div>
 			</h:form>
 		</div>
