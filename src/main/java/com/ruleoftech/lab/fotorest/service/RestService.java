@@ -1,4 +1,4 @@
-package com.ruleoftech.lab.fotorest;
+package com.ruleoftech.lab.fotorest.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -22,6 +23,7 @@ import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.ruleoftech.lab.fotorest.model.GalleryImageResponse;
 
 @Stateless
+@Named
 public class RestService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestService.class);
 
@@ -91,8 +93,8 @@ public class RestService {
 			Gson gson = new Gson();
 			GalleryImageResponse giResponse = gson.fromJson(json, GalleryImageResponse.class);
 			result = Arrays.asList(giResponse.getData());
-			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':" + giResponse.getStatus()
-					+ ", 'items':" + result.size() + "}}");
+			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':"
+					+ giResponse.getStatus() + ", 'items':" + result.size() + "}}");
 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);

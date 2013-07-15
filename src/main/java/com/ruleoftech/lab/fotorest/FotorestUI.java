@@ -1,18 +1,18 @@
 package com.ruleoftech.lab.fotorest;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.ResourceBundle;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ruleoftech.lab.fotorest.cdi.SpringContextHelper;
 import com.ruleoftech.lab.fotorest.model.GalleryAlbum;
 import com.ruleoftech.lab.fotorest.model.GalleryImage;
+import com.ruleoftech.lab.fotorest.service.RestService;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
-import com.vaadin.cdi.CDIUI;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanContainer;
@@ -23,6 +23,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -40,7 +41,7 @@ import com.vaadin.ui.themes.Reindeer;
 // If using JEE6 (problems with UI id)
 // @SessionScoped
 // @PreserveOnRefresh
-@CDIUI
+// @CDIUI
 @Theme("default")
 @SuppressWarnings("serial")
 public class FotorestUI extends UI {
@@ -64,13 +65,20 @@ public class FotorestUI extends UI {
 
 	private final BeanContainer<String, GalleryImage> images = new BeanContainer<String, GalleryImage>(
 			GalleryImage.class);
-	private final ResourceBundle bundle = ResourceBundle.getBundle("resources");
+	private final ResourceBundle bundle = ResourceBundle.getBundle("resources", Locale.US);
 
-	@Inject
+	// @Inject
 	private RestService service;
 
 	@Override
 	protected void init(VaadinRequest request) {
+		setLocale(Locale.US);
+
+		// Injecting beans the old way
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		service = (RestService) helper.getBean("restService");
+		content.setMargin(true);
+
 		initLayout();
 		initFotoList();
 	}

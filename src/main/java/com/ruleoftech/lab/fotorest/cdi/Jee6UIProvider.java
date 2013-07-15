@@ -1,4 +1,4 @@
-package com.ruleoftech.lab.fotorest.jee6;
+package com.ruleoftech.lab.fotorest.cdi;
 
 import com.vaadin.server.UIClassSelectionEvent;
 import com.vaadin.server.UICreateEvent;
