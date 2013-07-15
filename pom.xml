@@ -8,9 +8,10 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jsf.version>2.1</jsf.version>
+		<jsf.version>2.0</jsf.version>
 		<prime.version>3.5</prime.version>
-		<cxf.version>2.2.3</cxf.version>
+		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
+		<cxf.version>2.7.5</cxf.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     	<buildNumber>${maven.build.timestamp}</buildNumber>
@@ -29,24 +30,71 @@
 		    <layout>default</layout>  
 		</repository>
 	</repositories>
-
-	<dependencies>
 	
-		<!-- JSF 2 -->
+	<dependencies>
+		<!-- JSF 2 --> 
+		<!--  provided if using TomEE, WLS or similar) -->
 		<dependency>
 			<groupId>javax.faces</groupId>
 			<artifactId>javax.faces-api</artifactId>
 			<version>${jsf.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- If not supported by container (like Tomcat)
+		 
+		<!-- If not supported by container (like Tomcat) -->
+		<!--
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.faces</artifactId>
-			<version>2.2.0</version>
+			<version>2.0.11</version>
+		</dependency>-->
+		
+		<!-- JSR-299, built-in qualifier types of CDI (JSR-299)-->
+		<dependency>
+		   <groupId>javax.enterprise</groupId>
+		   <artifactId>cdi-api</artifactId>
+		   <scope>provided</scope>
+		   <version>1.1</version>
 		</dependency>
-		-->
+		
+		<!-- JSR-330 -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>el-impl</artifactId>
+			<version>2.2</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.el</groupId>
+					<artifactId>el-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- Spring (for CDI) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
 
 		<!-- PrimeFaces -->
 		<dependency>  
@@ -55,12 +103,12 @@
 			<version>${prime.version}</version>  
 		</dependency>
 		
-		<!-- REST: Apache CXF comes with TomEE+ -->
 		<dependency>
 	        <groupId>org.apache.cxf</groupId>
 	        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
 	        <version>${cxf.version}</version>
-	        <scope>provided</scope>
+	        <!-- REST: Apache CXF comes with TomEE+ but not with WLS
+	        <scope>provided</scope>-->
 	    </dependency>
 	       
 		<!--  Gson: Java to Json to Java conversion -->
@@ -72,13 +120,6 @@
 		</dependency>
 
 		<!-- Logging -->
-		<!-- comes with slf4j-log4j12
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -120,6 +161,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -166,4 +208,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
 </project>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"      
-	xmlns:h="http://java.sun.com/jsf/html"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html" 
 	xmlns:ui="http://java.sun.com/jsf/facelets" 
 	xmlns:p="http://primefaces.org/ui">
  
@@ -41,11 +41,11 @@
 		<div class="container">
 		<div class="header">
 			<h:form id="headerForm">
-			<h1><h:outputText value="#{msg['title']}" /></h1>
+			<h1><h:outputText value="#{msgs['title']}" /></h1>
 			
-			<p:commandButton value="#{msg['action.hot']}" update=":form:growl" 
+			<p:commandButton value="#{msgs['action.hot']}" update=":form:growl" 
 				actionListener="#{browserBean.hot}" id="btnHotSubmit"/>
-			<p:commandButton value="#{msg['action.random']}" update=":form:growl" 
+			<p:commandButton value="#{msgs['action.random']}" update=":form:growl" 
 				actionListener="#{browserBean.random}" id="btnRndSubmit"/>
 			<p:inputText label="search" id="search" value="#{browserBean.search}"></p:inputText>
 			<p:watermark for="search" value="Search" />
@@ -58,16 +58,15 @@
 			<p:growl id="growl" showDetail="true"/>
 			
 			<div class="left">
-				<p:dataTable var="image" value="#{browserBean.dataModel}" scrollRows="50"  
-						scrollable="true" liveScroll="true" scrollHeight="640" id="dataTable"
+				<p:dataTable id="dataTable" var="image" value="#{browserBean.dataModel}"   
+						scrollRows="50" scrollable="true" liveScroll="true" scrollHeight="640" 
 						selection="#{browserBean.selectedImage}" selectionMode="single" rowKey="#{image.id}">
-					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display" />
-					<p:ajax event="rowUnselect" listener="#{browserBean.onRowUnselect}" update=":form:growl"/>  
-					<p:column headerText="Title">  
+					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display :form:growl" />
+					<p:column headerText="Title">
 					   #{image.title}  
 					</p:column>
 					<p:column headerText="Link">  
-					    <h:outputLink value="#{image.link}"><h:outputText>#{image.link}</h:outputText></h:outputLink>  
+					    <h:outputLink value="#{image.link}"><h:outputText value="#{image.link}" /></h:outputLink>  
 					</p:column>
 				</p:dataTable>
 			

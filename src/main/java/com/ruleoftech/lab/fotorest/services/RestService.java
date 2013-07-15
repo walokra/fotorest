@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -22,6 +23,7 @@ import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.ruleoftech.lab.fotorest.model.GalleryImageResponse;
 
 @Stateless
+@Named
 public class RestService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestService.class);
 
@@ -66,33 +68,13 @@ public class RestService {
 		String json = client.get(String.class);
 		LOGGER.trace("{'method':'listImages', 'Uri':'{}'", client.getCurrentURI() + "}");
 
-		// // RESTeasy
-		// ClientRequest req = new ClientRequest(p.get("baseurl").toString() +
-		// "/{gallery}");
-		// if (random) {
-		// req.pathParameter("gallery", p.get("gallery.random").toString());
-		// } else if (query != null && !query.isEmpty()) {
-		// req.pathParameter("gallery", p.get("gallery.search").toString());
-		// req.queryParameter("q", query);
-		// } else {
-		// req.pathParameter("gallery", p.get("gallery.hot").toString());
-		// }
-		// req.header("Authorization", "Client-ID " +
-		// p.get("client.id").toString());
-		// req.accept("application/json");
-		// LOGGER.trace("{'method':'listImages', 'Uri':'{}'", req.getUri() +
-		// "}");
-		//
-		// ClientResponse<String> res = req.get(String.class);
-		// String json = res.getEntity();
-
 		try {
 			// Parse JSON to Java objects
 			Gson gson = new Gson();
 			GalleryImageResponse giResponse = gson.fromJson(json, GalleryImageResponse.class);
 			result = Arrays.asList(giResponse.getData());
-			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':" + giResponse.getStatus()
-					+ ", 'items':" + result.size() + "}}");
+			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':"
+					+ giResponse.getStatus() + ", 'items':" + result.size() + "}}");
 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -114,21 +96,6 @@ public class RestService {
 		client.accept(MediaType.APPLICATION_JSON);
 		String json = client.get(String.class);
 		LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", client.getCurrentURI() + "}");
-
-		// RESTeasy
-		// ClientRequest req = new ClientRequest(p.get("baseurl").toString() +
-		// "/{gallery}");
-		// req.pathParameter("gallery", p.get("gallery.album").toString() + "/"
-		// + galleryId);
-		//
-		// req.header("Authorization", "Client-ID " +
-		// p.get("client.id").toString());
-		// req.accept("application/json");
-		// LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", req.getUri()
-		// + "}");
-		//
-		// ClientResponse<String> res = req.get(String.class);
-		// String json = res.getEntity();
 
 		try {
 			// Parse JSON to Java objects
@@ -154,25 +121,13 @@ public class RestService {
 		client.header("Authorization", "Client-ID " + p.get("client.id").toString());
 		client.accept(MediaType.APPLICATION_JSON);
 		String json = client.get(String.class);
-
-		// RESTEasy
-		// ClientRequest req = new
-		// ClientRequest("https://api.imgur.com/3/credits");
-		// req.header("Authorization", "Client-ID " +
-		// p.get("client.id").toString());
-		// req.accept("application/json");
-		//
-		// ClientResponse<String> res = req.get(String.class);
-		// String json = res.getEntity();
-
 		LOGGER.trace("{'method':'getCredits', 'response':{}}", json);
 
 		try {
 			Gson gson = new Gson();
 			CreditsResponse response = gson.fromJson(json, CreditsResponse.class);
 			// LOGGER.trace("{'method':'getCredits', 'result':{'success':{}, 'status':{}}}",
-			// response.getSuccess(),
-			// response.getStatus());
+			// response.getSuccess(), response.getStatus());
 			StringBuilder sb = new StringBuilder();
 			sb.append("client=");
 			sb.append(response.getData().getClientRemaining());

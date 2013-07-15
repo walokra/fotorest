@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app">
+	<weblogic-version>10.3.5</weblogic-version>
+	
+	<session-descriptor>
+		<cookie-path>/fotorest-jsf2-pf</cookie-path>
+		<persistent-store-type>memory</persistent-store-type>
+	</session-descriptor>
+	<context-root>fotorest-jsf2-pf</context-root>
+
+	<library-ref>
+		<library-name>jsf</library-name>
+		<specification-version>2.0</specification-version>
+		<implementation-version>1.0.0.0_2-0-2</implementation-version>
+		<exact-match>true</exact-match>
+	</library-ref>
+	<library-ref>
+		<library-name>jstl</library-name>
+		<specification-version>1.2</specification-version>
+		<implementation-version>1.2.0.1</implementation-version>
+		<exact-match>true</exact-match>
+	</library-ref>
+
+	<container-descriptor>
+		<prefer-web-inf-classes>true</prefer-web-inf-classes>
+	</container-descriptor>
+
+    <fast-swap>
+        <enabled>false</enabled>
+    </fast-swap>
+</weblogic-web-app>

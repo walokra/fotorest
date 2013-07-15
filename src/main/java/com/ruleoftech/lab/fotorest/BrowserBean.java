@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,14 +18,15 @@ import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.ruleoftech.lab.fotorest.model.GalleryImageDataModel;
 import com.ruleoftech.lab.fotorest.services.RestService;
 
+@SuppressWarnings("serial")
 @SessionScoped
 @Named
 public class BrowserBean implements Serializable {
 
-	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserBean.class);
 
 	@Inject
+	@Named("restService")
 	private RestService service;
 
 	private GalleryImage selectedImage;
@@ -39,7 +39,9 @@ public class BrowserBean implements Serializable {
 		LOGGER.trace("{'method':'init'}");
 		System.out.print("{'method':'init'}");
 
-		this.dataModel = new GalleryImageDataModel(service.hotImages());
+		if (dataModel == null) {
+			this.dataModel = new GalleryImageDataModel(service.hotImages());
+		}
 	}
 
 	public void hot() {
@@ -57,7 +59,6 @@ public class BrowserBean implements Serializable {
 	}
 
 	public void onRowSelect(SelectEvent event) {
-		LOGGER.trace("{'method':'onRowSelect'}");
 		selectedImage = (GalleryImage) event.getObject();
 
 		if (selectedImage != null) {
@@ -71,21 +72,14 @@ public class BrowserBean implements Serializable {
 				GalleryAlbum album = service.getGalleryAlbum(tokens[1]);
 				LOGGER.trace("{'method':'onRowSelect.album', 'debug':'{}'}", album.toString());
 
-				// for (com.ruleoftech.lab.fotorest.model.Image i : Arrays.asList(album.getImages())) {
-				// Image image = new Image();
-				// image.setSource(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
-				// }
-				FacesMessage facesMessage = new FacesMessage("This is a message");
+				// TODO: implement showing galley albums' images
+
+				FacesMessage facesMessage = new FacesMessage("Can't show image!",
+						"Support for Gallery Albums isn't implemented");
 				facesMessage.setSeverity(FacesMessage.SEVERITY_INFO);
 				FacesContext.getCurrentInstance().addMessage(null, facesMessage);
 			}
 		}
-	}
-
-	public void onRowUnselect(UnselectEvent event) {
-		FacesMessage msg = new FacesMessage("Image unselected", ((GalleryImage) event.getObject()).getTitle());
-
-		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	/**
