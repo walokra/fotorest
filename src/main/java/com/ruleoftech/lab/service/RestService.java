@@ -73,12 +73,11 @@ public class RestService {
 			result = Arrays.asList(giResponse.getData());
 			LOGGER.trace("{'method':'listImages', 'result':{'success':" + giResponse.getSuccess() + ", 'status':"
 					+ giResponse.getStatus() + ", 'items':" + result.size() + "}}");
-
+			return result;
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
-
-		return result;
 	}
 
 	public GalleryAlbum getGalleryAlbum(String galleryId) {
@@ -103,11 +102,11 @@ public class RestService {
 			LOGGER.trace("{'method':'getGalleryAlbum', 'result':{'success':" + gaResponse.getSuccess() + ", 'status':"
 					+ gaResponse.getStatus() + ", 'items':" + gaResponse.getData().getImages_count() + "}}");
 
+			return result;
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
-
-		return result;
 	}
 
 	public String getCredits() {
@@ -134,8 +133,8 @@ public class RestService {
 			return sb.toString();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return "";
 	}
 
 	private Properties readProps() {

@@ -27,7 +27,12 @@ public class WicketApplication extends WebApplication {
 		super.init();
 
 		// add your configuration here
+		getDebugSettings().setDevelopmentUtilitiesEnabled(true);
+
 		// Integrate Spring with Wicket
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+
+		// Strip wicket tags from the HTML rendering as suggested with wicket-jquery-ui
+		this.getMarkupSettings().setStripWicketTags(true); // IMPORTANT!
 	}
 }

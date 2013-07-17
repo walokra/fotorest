@@ -11,6 +11,7 @@
 	<description></description>
 	<properties>
 		<wicket.version>6.9.1</wicket.version>
+		<wicket-jquery-ui.version>6.9.0</wicket-jquery-ui.version>
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
 		<cxf.version>2.7.5</cxf.version>
 		<slf4j.version>1.7.2</slf4j.version>
@@ -27,13 +28,12 @@
 			<artifactId>wicket-core</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-		<!-- OPTIONAL DEPENDENCY
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-		-->
+		
 		<!-- Integrate Wicket with Spring -->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
@@ -52,6 +52,17 @@
 	        <version>${wicket.version}</version>
 	    </dependency>
 		
+		<dependency>
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-jquery-ui</artifactId>
+			<version>${wicket-jquery-ui.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-jquery-ui</artifactId>
+			<version>${wicket-jquery-ui.version}</version>
+		</dependency>
+
 		<!-- Spring (for CDI) -->
 		<dependency>
 	        <groupId>javax.inject</groupId>
