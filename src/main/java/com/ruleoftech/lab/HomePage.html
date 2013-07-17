@@ -8,6 +8,29 @@
     <link rel="stylesheet" type="text/css" href="css/kendo/kendo.common.min.css" media="all" />
     <link rel="stylesheet" type="text/css" href="css/kendo/kendo.default.min.css" media="all" />
 	<link rel="stylesheet" type="text/css" href="css/styles.css" />
+	<script type="text/javascript">
+	$(document).ready(function() {
+		 
+		var watermark = 'Search the gallery';
+	 
+		//init, set watermark text and class
+		$('#search').val(watermark).addClass('watermark');
+	 
+		//if blur and no value inside, set watermark text and class again.
+	 	$('#search').blur(function(){
+	  		if ($(this).val().length == 0){
+	    		$(this).val(watermark).addClass('watermark');
+			}
+	 	});
+	 
+		//if focus and text is watermrk, set it to empty and remove the watermark class
+		$('#search').focus(function(){
+	  		if ($(this).val() == watermark){
+	    		$(this).val('').removeClass('watermark');
+			}
+	 	});
+	});
+	</script>
 </head>
     
 <body> 
@@ -23,8 +46,9 @@
 				wicket:message="value:action.hot"/>
 			<input type="submit" wicket:id="randomButton"
 				wicket:message="value:action.random"/>
-			<input type="text" class="search" value="[Search]" wicket:id="search"
-				wicket:message="value:search.watermark"/>
+			<input type="submit" style="display: none;" wicket:id="searchButton"
+				wicket:message="value:action.search"/>
+			<input id="search" type="text" class="search" value="[Search]" wicket:id="search" />
 		</div>
 	
 		<div class="content">
@@ -33,11 +57,12 @@
 			</div>
 			
 	 		<div class="right">
-				<div id="display">
+				<div class="display">
 					<h3><span wicket:id="galleryImageTitle">[Title]</span></h3>
 					<div wicket:id="galleryAlbumPanel">
-						<wicket:container wicket:id="galleryAlbumContainer">[images]</wicket:container>
-					</div>
+						<div class="imgTitle" wicket:id="title">[title]</div>
+						<img wicket:id="image" alt="image" />
+        			</div>
 				</div>
 			</div>
 			

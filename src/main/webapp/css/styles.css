@@ -62,7 +62,7 @@ body, input, textarea, button {
 }
 
 .display .imgTitle {
-	padding: 5px; display: block;
+	padding: 5px;
 }
 
 .display img {
@@ -124,7 +124,7 @@ a, a:link, a:visited {
 	font-weight: bold; 
 }
 .resultTable tbody {
-	
+
 }
 
 .resultTable tfoot td {
@@ -134,10 +134,11 @@ a, a:link, a:visited {
 }
 .resultTable tbody td					{background:#fff;}
 .resultTable tbody tr.odd td			{background:#eee;}
-.resultTable a, .resultTable a:linkk	{display: block;}
+.resultTable a, .resultTable a:link		{display: block;}
 
 /* Wicket Datatable */
 tr.navigation .navigatorLabel {float:left;}
 tr.navigation .navigator { text-align: right;}
+tr.navigation .navigator a, tr.navigation .navigator a:link {display: inline;}
 tr.navigation {text-align: left;}
 tr.navigation td {padding-right: 0px;}

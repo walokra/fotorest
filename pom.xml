@@ -6,7 +6,7 @@
 	<groupId>com.ruleoftech.lab</groupId>
 	<artifactId>fotorest-wicket</artifactId>
 	<packaging>war</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>Fotorest Wicket App</name>
 	<description></description>
 	<properties>
@@ -113,7 +113,40 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+			</resource>
+			<!-- Replace the ${project.version} with real version -->
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/WicketApplication.properties</include>
+				</includes>
+			</resource>
+			<!-- Copy rest so that filtering = false -->
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>	
+				<excludes>
+					<exclude>**/WicketApplication.properties</exclude>
+					<exclude>**/*.java</exclude>
+				</excludes>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -129,7 +162,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadSources>true</downloadSources>
