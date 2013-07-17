@@ -1,6 +1,9 @@
 package com.ruleoftech.lab.model;
 
-public class GalleryImageResponse {
+import java.io.Serializable;
+
+public class GalleryImageResponse implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private GalleryImage[] data;
 	private Boolean success;

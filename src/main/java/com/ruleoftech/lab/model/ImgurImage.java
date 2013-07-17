@@ -1,6 +1,10 @@
 package com.ruleoftech.lab.model;
 
-public class Image {
+import java.io.Serializable;
+
+public class ImgurImage implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 	private String title;
 	private String description;

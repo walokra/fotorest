@@ -1,6 +1,9 @@
 package com.ruleoftech.lab.model;
 
-public class CreditsResponse {
+import java.io.Serializable;
+
+public class CreditsResponse implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private Credits data;
 	private Boolean success;

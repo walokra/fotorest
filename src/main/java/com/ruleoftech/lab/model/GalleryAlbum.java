@@ -1,8 +1,11 @@
 package com.ruleoftech.lab.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class GalleryAlbum {
+public class GalleryAlbum implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 	private String title;
 	private String description;
@@ -20,7 +23,7 @@ public class GalleryAlbum {
 	private String vote;
 	private Integer images_count;
 
-	private Image[] images;
+	private ImgurImage[] images;
 
 	public String getId() {
 		return id;
@@ -150,11 +153,11 @@ public class GalleryAlbum {
 		this.images_count = images_count;
 	}
 
-	public Image[] getImages() {
+	public ImgurImage[] getImages() {
 		return images;
 	}
 
-	public void setImages(Image[] images) {
+	public void setImages(ImgurImage[] images) {
 		this.images = images;
 	}
 

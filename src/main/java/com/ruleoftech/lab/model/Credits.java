@@ -1,6 +1,10 @@
 package com.ruleoftech.lab.model;
 
-public class Credits {
+import java.io.Serializable;
+
+public class Credits implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private Integer UserLimit;
 	private Integer UserRemaining;
 	private Long UserReset;
