@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app">
+	<weblogic-version>10.3.5</weblogic-version>
+	
+	<session-descriptor>
+		<cookie-path>/fotorest-wicket</cookie-path>
+		<persistent-store-type>memory</persistent-store-type>
+	</session-descriptor>
+	<context-root>fotorest-wicket</context-root>
+
+	<container-descriptor>
+		<prefer-web-inf-classes>true</prefer-web-inf-classes>
+	</container-descriptor>
+
+    <fast-swap>
+        <enabled>false</enabled>
+    </fast-swap>
+</weblogic-web-app>
