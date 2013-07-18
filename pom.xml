@@ -53,11 +53,6 @@
 			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-cdi</artifactId>
-            <version>1.0.0.alpha1</version>
-        </dependency>
 	    <dependency>
 	      <groupId>com.vaadin</groupId>
 	      <artifactId>vaadin-themes</artifactId>
@@ -82,8 +77,6 @@
 	        <groupId>org.apache.cxf</groupId>
 	        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
 	        <version>${cxf.version}</version>
-	        <!-- REST: Apache CXF comes with TomEE+ but not with WLS 11g
-	        <scope>provided</scope>-->
 	    </dependency>
 	       
 		<!--  Gson: Java to Json to Java conversion -->

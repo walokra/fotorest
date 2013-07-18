@@ -39,10 +39,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 @Title("Fotorest")
-// If using JEE6 (problems with UI id)
-// @SessionScoped
-// @PreserveOnRefresh
-// @CDIUI
 @Theme("default")
 @SuppressWarnings("serial")
 public class FotorestUI extends UI {
@@ -68,7 +64,6 @@ public class FotorestUI extends UI {
 			GalleryImage.class);
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources", Locale.US);
 
-	// @Inject
 	private RestService service;
 
 	@Override
@@ -130,7 +125,11 @@ public class FotorestUI extends UI {
 		initImagePanel();
 
 		// show credits
-		credits.setValue(service.getCredits());
+		try {
+			credits.setValue(service.getCredits());
+		} catch (Exception e) {
+			Notification.show(e.getMessage(), "", Notification.Type.ERROR_MESSAGE);
+		}
 	}
 
 	/**
@@ -221,9 +220,13 @@ public class FotorestUI extends UI {
 				Notification.show("Fetching random gallery", "", Notification.Type.HUMANIZED_MESSAGE);
 
 				images.removeAllItems();
-				for (GalleryImage i : service.randomImages()) {
-					images.addBean(i);
-					images.addNestedContainerProperty("link");
+				try {
+					for (GalleryImage i : service.randomImages()) {
+						images.addBean(i);
+						images.addNestedContainerProperty("link");
+					}
+				} catch (Exception e) {
+					Notification.show(e.getMessage(), "", Notification.Type.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -244,9 +247,13 @@ public class FotorestUI extends UI {
 				Notification.show("Searching the gallery", "", Notification.Type.HUMANIZED_MESSAGE);
 
 				images.removeAllItems();
-				for (GalleryImage i : service.searchImages(searchField.getValue())) {
-					images.addBean(i);
-					images.addNestedContainerProperty("link");
+				try {
+					for (GalleryImage i : service.searchImages(searchField.getValue())) {
+						images.addBean(i);
+						images.addNestedContainerProperty("link");
+					}
+				} catch (Exception e) {
+					Notification.show(e.getMessage(), "", Notification.Type.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -296,13 +303,17 @@ public class FotorestUI extends UI {
 						imagesLayout.addComponent(image);
 					} else {
 						String[] tokens = gi.getUrl().split("\\/(?=[^\\/]+$)");
-						GalleryAlbum album = service.getGalleryAlbum(tokens[1]);
-						LOGGER.trace("{'method':'photoList.album', 'debug':'{}'}", album.toString());
+						try {
+							GalleryAlbum album = service.getGalleryAlbum(tokens[1]);
+							LOGGER.trace("{'method':'photoList.album', 'debug':'{}'}", album.toString());
 
-						for (com.ruleoftech.lab.fotorest.model.Image i : Arrays.asList(album.getImages())) {
-							Image image = new Image();
-							image.setSource(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
-							imagesLayout.addComponent(image);
+							for (com.ruleoftech.lab.fotorest.model.Image i : Arrays.asList(album.getImages())) {
+								Image image = new Image();
+								image.setSource(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
+								imagesLayout.addComponent(image);
+							}
+						} catch (Exception e) {
+							Notification.show(e.getMessage(), "", Notification.Type.ERROR_MESSAGE);
 						}
 					}
 				}
@@ -333,9 +344,13 @@ public class FotorestUI extends UI {
 	 */
 	private void fillPhotolistWithHotImages() {
 		images.removeAllItems();
-		for (GalleryImage i : service.hotImages()) {
-			images.addBean(i);
-			images.addNestedContainerProperty("link");
+		try {
+			for (GalleryImage i : service.hotImages()) {
+				images.addBean(i);
+				images.addNestedContainerProperty("link");
+			}
+		} catch (Exception e) {
+			Notification.show(e.getMessage(), "", Notification.Type.ERROR_MESSAGE);
 		}
 	}
 
