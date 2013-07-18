@@ -6,9 +6,22 @@
 	<groupId>com.ruleoftech.lab</groupId>
 	<artifactId>fotorest-wicket</artifactId>
 	<packaging>war</packaging>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<name>Fotorest Wicket App</name>
-	<description></description>
+	<description>Simple imgur browser done with Wicket</description>
+	
+	<developers>
+		<developer>
+			<name>Marko Wallin</name>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MIT license</name>
+			<url>http://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+	
 	<properties>
 		<wicket.version>6.9.1</wicket.version>
 		<wicket-jquery-ui.version>6.9.0</wicket-jquery-ui.version>
@@ -85,8 +98,6 @@
 	        <groupId>org.apache.cxf</groupId>
 	        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
 	        <version>${cxf.version}</version>
-	        <!-- REST: Apache CXF comes with TomEE+ but not with WLS 11g
-	        <scope>provided</scope>-->
 	    </dependency>
 		
 		<!--  Gson: Java to Json to Java conversion -->
@@ -98,6 +109,11 @@
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>

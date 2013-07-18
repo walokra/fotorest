@@ -1,6 +1,7 @@
 package com.ruleoftech.lab.components;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public abstract class GalleryImageDataProvider<T extends Serializable> extends S
 		if (!dataReady) {
 			this.dataList = getData();
 			this.dataReady = true;
+		}
+		if (dataList == null) {
+			this.dataList = new ArrayList<T>();
 		}
 		return this.dataList;
 	}

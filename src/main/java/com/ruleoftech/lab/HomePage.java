@@ -34,6 +34,7 @@ import com.googlecode.wicket.jquery.ui.panel.JQueryFeedbackPanel;
 import com.ruleoftech.lab.components.ExternalImage;
 import com.ruleoftech.lab.components.GalleryImageDataProvider;
 import com.ruleoftech.lab.components.LinkPropertyColumn;
+import com.ruleoftech.lab.exception.BusinessException;
 import com.ruleoftech.lab.model.GalleryAlbum;
 import com.ruleoftech.lab.model.GalleryImage;
 import com.ruleoftech.lab.model.ImgurImage;
@@ -70,7 +71,7 @@ public class HomePage extends WebPage {
 		// init list to contain some images
 		try {
 			galleryImages = restService.hotImages();
-		} catch (Exception e) {
+		} catch (BusinessException e) {
 			error(e.getMessage());
 		}
 		initTable();
@@ -94,12 +95,12 @@ public class HomePage extends WebPage {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				LOGGER.trace("{'method':'hotButton.onSubmit'}");
 				info("Fetching hot images");
-				target.add(form);
 				try {
 					galleryImages = restService.hotImages();
-				} catch (Exception e) {
+				} catch (BusinessException e) {
 					error(e.getMessage());
 				}
+				target.add(form);
 			}
 		});
 		form.add(new AjaxButton("randomButton") {
@@ -107,12 +108,12 @@ public class HomePage extends WebPage {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				LOGGER.trace("{'method':'randomButton.onSubmit'}");
 				info("Fetching random images");
-				target.add(form);
 				try {
 					galleryImages = restService.randomImages();
-				} catch (Exception e) {
+				} catch (BusinessException e) {
 					error(e.getMessage());
 				}
+				target.add(form);
 			}
 		});
 
@@ -124,12 +125,12 @@ public class HomePage extends WebPage {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				LOGGER.trace("{'method':'searchButton.onSubmit'}");
 				info("Searching the gallery");
-				target.add(form);
 				try {
 					galleryImages = restService.searchImages(search.getValue());
-				} catch (Exception e) {
+				} catch (BusinessException e) {
 					error(e.getMessage());
 				}
+				target.add(form);
 			}
 		};
 		form.add(searchButton);
@@ -140,7 +141,7 @@ public class HomePage extends WebPage {
 		String credits = "";
 		try {
 			credits = restService.getCredits();
-		} catch (Exception e) {
+		} catch (BusinessException e) {
 			error(e.getMessage());
 		}
 		form.add(new Label("credits", credits));
@@ -153,11 +154,11 @@ public class HomePage extends WebPage {
 		// resources for working with datatable:
 		// http://www.packtpub.com/article/apache-wicket-displaying-data-using-datatable
 		final AjaxFallbackDefaultDataTable<GalleryImage, String> table = new AjaxFallbackDefaultDataTable<GalleryImage, String>(
-				"datatable", createColumns(), dataProvider(), 50);
+				"datatable", createColumns(), createDataProvider(), 50);
 		form.add(table);
 	}
 
-	private ISortableDataProvider<GalleryImage, String> dataProvider() {
+	private ISortableDataProvider<GalleryImage, String> createDataProvider() {
 
 		return new GalleryImageDataProvider<GalleryImage>() {
 			@Override
@@ -188,16 +189,16 @@ public class HomePage extends WebPage {
 							GalleryAlbum album = new GalleryAlbum();
 							try {
 								album = restService.getGalleryAlbum(tokens[1]);
-							} catch (Exception e) {
-								error(e.getMessage());
-							}
-							LOGGER.trace("{'method':'table.title.onClick.album', 'debug':'{}'}", album.toString());
+								LOGGER.trace("{'method':'table.title.onClick.album', 'debug':'{}'}", album.toString());
 
-							for (ImgurImage i : Arrays.asList(album.getImages())) {
-								i.setLink(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
-								Model<ImgurImage> img = new Model<ImgurImage>();
-								img.setObject(i);
-								images.add(img);
+								for (ImgurImage i : Arrays.asList(album.getImages())) {
+									i.setLink(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
+									Model<ImgurImage> img = new Model<ImgurImage>();
+									img.setObject(i);
+									images.add(img);
+								}
+							} catch (BusinessException be) {
+								error(be.getMessage());
 							}
 						} else {
 							LOGGER.trace("{'method':'table.title.onClick.image', 'debug':'{}'}", gi.toString());
