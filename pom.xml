@@ -7,6 +7,19 @@
 	<packaging>war</packaging>
 	<version>0.2-SNAPSHOT</version>
 	<name>Fotorest Vaadin App</name>
+	<description>Simple imgur browser done with Vaadin</description>
+	
+	<developers>
+		<developer>
+			<name>Marko Wallin</name>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MIT license</name>
+			<url>http://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,7 +47,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	 
+ 
 	<dependencies>
 		<!-- vaadin core -->
 		<dependency>
