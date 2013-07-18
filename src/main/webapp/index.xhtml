@@ -22,9 +22,9 @@
 			<p:commandButton value="search" id="searchBtnHidden" actionListener="#{browserBean.search}" 
 				update=":form:dataTable" style="display: none;"/>			
 			<p:commandButton value="#{msgs['action.hot']}" update=":form:dataTable" 
-				actionListener="#{browserBean.hot}" id="btnHotSubmit"/>
+				actionListener="#{browserBean.hot}" id="btnHotSubmit" immediate="true"/>
 			<p:commandButton value="#{msgs['action.random']}" update=":form:dataTable" 
-				actionListener="#{browserBean.random}" id="btnRndSubmit"/>
+				actionListener="#{browserBean.random}" id="btnRndSubmit" immediate="true"/>
 			<p:inputText label="search" styleClass="search" id="search" value="#{browserBean.query}"/>
 			<p:watermark for="search" value="#{msgs['action.search.watermark']}"/>
 			<p:defaultCommand target="searchBtnHidden"/>
@@ -40,7 +40,7 @@
 				<p:dataTable id="dataTable" var="image" value="#{browserBean.dataModel}"   
 						scrollRows="50" scrollable="true" liveScroll="true" scrollHeight="100%" 
 						selection="#{browserBean.selectedImage}" selectionMode="single" rowKey="#{image.id}">
-					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display :form:imagePanel"/>
+					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display"/>
 					<p:column headerText="Title">#{image.title}</p:column>
 					<p:column headerText="Link">  
 					    <h:outputLink value="#{image.link}"><h:outputText value="#{image.link}" /></h:outputLink>  

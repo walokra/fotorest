@@ -41,7 +41,7 @@ public class BrowserBean implements Serializable {
 	private String query;
 	private String credits;
 
-	private OutputPanel imagePanel;
+	private transient OutputPanel imagePanel;
 
 	@PostConstruct
 	public void init() {
@@ -89,13 +89,14 @@ public class BrowserBean implements Serializable {
 
 	public void onRowSelect(SelectEvent event) {
 		selectedImage = (GalleryImage) event.getObject();
-		imagePanel.getChildren().removeAll(imagePanel.getChildren());
+		imagePanel.getChildren().clear();
 
 		if (selectedImage != null) {
 			LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", selectedImage.toString());
 			if (!selectedImage.isIs_album()) {
 				// Show original image if smaller than large thumbnail (640x640)
 				GraphicImage image = new GraphicImage();
+				image.setTransient(true);
 				image.setUrl(getExternalResourceFromUrl(selectedImage.getLink(), selectedImage.getWidth(),
 						selectedImage.getHeight()));
 				imagePanel.getChildren().add(image);
@@ -108,10 +109,12 @@ public class BrowserBean implements Serializable {
 
 					for (Image i : Arrays.asList(album.getImages())) {
 						GraphicImage image = new GraphicImage();
+						image.setTransient(true);
 						image.setUrl(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
 						imagePanel.getChildren().add(image);
 
 						HtmlOutputText title = new HtmlOutputText();
+						title.setTransient(true);
 						title.setValue(i.getTitle());
 						title.setStyleClass("imgTitle");
 						imagePanel.getChildren().add(title);

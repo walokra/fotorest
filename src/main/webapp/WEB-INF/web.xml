@@ -6,7 +6,11 @@
 	id="WebApp_ID" version="2.5">
 	
 	<display-name>fotorest-jsf2-pf</display-name>
-	
+
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>server</param-value>
+	</context-param>
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
@@ -23,7 +27,12 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>WEB-INF/applicationContext.xml</param-value>
 	</context-param>
-	
+	<!-- for error:  Cannot set content type. Response already committed -->
+	<context-param>
+		<param-name>javax.faces.FACELETS_BUFFER_SIZE</param-name>
+		<param-value>409600</param-value>
+	</context-param>
+
 	<!-- Facelets -->
 	<context-param>
 		<param-name>javax.faces.facelets.DEVELOPMENT</param-name>

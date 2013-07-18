@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ruleoftech.lab</groupId>
 	<artifactId>fotorest-jsf2-pf</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Fotorest JSF2 PrimeFaces App</name>
 	<description>Simple imgur app done with JSF 2 and PrimeFaces</description>
@@ -224,5 +224,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
 </project>
