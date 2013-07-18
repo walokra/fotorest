@@ -5,6 +5,19 @@
 	<version>0.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Fotorest JSF2 PrimeFaces App</name>
+	<description>Simple imgur app done with JSF 2 and PrimeFaces</description>
+	
+	<developers>
+		<developer>
+			<name>Marko Wallin</name>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MIT license</name>
+			<url>http://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -107,8 +120,6 @@
 	        <groupId>org.apache.cxf</groupId>
 	        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
 	        <version>${cxf.version}</version>
-	        <!-- REST: Apache CXF comes with TomEE+ but not with WLS
-	        <scope>provided</scope>-->
 	    </dependency>
 	       
 		<!--  Gson: Java to Json to Java conversion -->
@@ -120,6 +131,11 @@
 		</dependency>
 
 		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
