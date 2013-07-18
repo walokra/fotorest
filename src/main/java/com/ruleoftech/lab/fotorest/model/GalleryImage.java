@@ -3,6 +3,9 @@ package com.ruleoftech.lab.fotorest.model;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Link;
 
+/**
+ * Imgur's Gallery Image Data model, see: https://api.imgur.com/models/gallery_image.
+ */
 public class GalleryImage {
 	private String id;
 	private String title;

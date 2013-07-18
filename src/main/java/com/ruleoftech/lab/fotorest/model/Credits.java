@@ -1,5 +1,8 @@
 package com.ruleoftech.lab.fotorest.model;
 
+/**
+ * Imgur's Credits, endpoint: https://api.imgur.com/3/credits.
+ */
 public class Credits {
 	private Integer UserLimit;
 	private Integer UserRemaining;
