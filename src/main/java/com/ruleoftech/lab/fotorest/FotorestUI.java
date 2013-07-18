@@ -31,6 +31,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -205,6 +206,8 @@ public class FotorestUI extends UI {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				LOGGER.trace("{'method':'listButton.buttonClick'}");
+				Notification.show("Fetching hot gallery", "", Notification.Type.HUMANIZED_MESSAGE);
+
 				fillPhotolistWithHotImages();
 			}
 		});
@@ -215,6 +218,8 @@ public class FotorestUI extends UI {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				LOGGER.trace("{'method':'randomButton.buttonClick'}");
+				Notification.show("Fetching random gallery", "", Notification.Type.HUMANIZED_MESSAGE);
+
 				images.removeAllItems();
 				for (GalleryImage i : service.randomImages()) {
 					images.addBean(i);
@@ -235,6 +240,9 @@ public class FotorestUI extends UI {
 			@Override
 			public void handleAction(Object sender, Object target) {
 				LOGGER.trace("{'method':'searchField', 'value':'" + searchField.getValue() + "'}");
+				// https://vaadin.com/book/-/page/application.notifications.html
+				Notification.show("Searching the gallery", "", Notification.Type.HUMANIZED_MESSAGE);
+
 				images.removeAllItems();
 				for (GalleryImage i : service.searchImages(searchField.getValue())) {
 					images.addBean(i);
@@ -296,9 +304,6 @@ public class FotorestUI extends UI {
 							image.setSource(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
 							imagesLayout.addComponent(image);
 						}
-						// https://vaadin.com/book/-/page/application.notifications.html
-						// Notification.show("Can't show image", "Gallery image is an album",
-						// Notification.Type.HUMANIZED_MESSAGE);
 					}
 				}
 			}

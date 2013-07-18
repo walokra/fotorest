@@ -68,26 +68,6 @@ public class RestService {
 		String json = client.get(String.class);
 		LOGGER.trace("{'method':'listImages', 'Uri':'{}'", client.getCurrentURI() + "}");
 
-		// // RESTeasy
-		// ClientRequest req = new ClientRequest(p.get("baseurl").toString() +
-		// "/{gallery}");
-		// if (random) {
-		// req.pathParameter("gallery", p.get("gallery.random").toString());
-		// } else if (query != null && !query.isEmpty()) {
-		// req.pathParameter("gallery", p.get("gallery.search").toString());
-		// req.queryParameter("q", query);
-		// } else {
-		// req.pathParameter("gallery", p.get("gallery.hot").toString());
-		// }
-		// req.header("Authorization", "Client-ID " +
-		// p.get("client.id").toString());
-		// req.accept("application/json");
-		// LOGGER.trace("{'method':'listImages', 'Uri':'{}'", req.getUri() +
-		// "}");
-		//
-		// ClientResponse<String> res = req.get(String.class);
-		// String json = res.getEntity();
-
 		try {
 			// Parse JSON to Java objects
 			Gson gson = new Gson();
@@ -98,6 +78,7 @@ public class RestService {
 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 
 		return result;
@@ -117,21 +98,6 @@ public class RestService {
 		String json = client.get(String.class);
 		LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", client.getCurrentURI() + "}");
 
-		// RESTeasy
-		// ClientRequest req = new ClientRequest(p.get("baseurl").toString() +
-		// "/{gallery}");
-		// req.pathParameter("gallery", p.get("gallery.album").toString() + "/"
-		// + galleryId);
-		//
-		// req.header("Authorization", "Client-ID " +
-		// p.get("client.id").toString());
-		// req.accept("application/json");
-		// LOGGER.trace("{'method':'getGalleryAlbum', 'Uri':'{}'", req.getUri()
-		// + "}");
-		//
-		// ClientResponse<String> res = req.get(String.class);
-		// String json = res.getEntity();
-
 		try {
 			// Parse JSON to Java objects
 			Gson gson = new Gson();
@@ -142,6 +108,7 @@ public class RestService {
 
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 
 		return result;
@@ -152,29 +119,14 @@ public class RestService {
 
 		// Apache CXF
 		WebClient client = WebClient.create("https://api.imgur.com/3/credits");
-		// client.path("bookstore/books");
 		client.header("Authorization", "Client-ID " + p.get("client.id").toString());
 		client.accept(MediaType.APPLICATION_JSON);
 		String json = client.get(String.class);
-
-		// RESTEasy
-		// ClientRequest req = new
-		// ClientRequest("https://api.imgur.com/3/credits");
-		// req.header("Authorization", "Client-ID " +
-		// p.get("client.id").toString());
-		// req.accept("application/json");
-		//
-		// ClientResponse<String> res = req.get(String.class);
-		// String json = res.getEntity();
-
 		LOGGER.trace("{'method':'getCredits', 'response':{}}", json);
 
 		try {
 			Gson gson = new Gson();
 			CreditsResponse response = gson.fromJson(json, CreditsResponse.class);
-			// LOGGER.trace("{'method':'getCredits', 'result':{'success':{}, 'status':{}}}",
-			// response.getSuccess(),
-			// response.getStatus());
 			StringBuilder sb = new StringBuilder();
 			sb.append("client=");
 			sb.append(response.getData().getClientRemaining());
@@ -183,8 +135,8 @@ public class RestService {
 			return sb.toString();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return "";
 	}
 
 	private Properties readProps() {
@@ -203,6 +155,7 @@ public class RestService {
 				// }
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
+				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
 		return p;
