@@ -7,7 +7,7 @@ Technologies
 * Vaadin 7
 * Java EE 6
 * Spring 3.2 (for CDI)
-* Apache CXF 2.7 (http://cxf.apache.org/) or RESTEasy (http://www.jboss.org/resteasy)
+* Apache CXF 2.7 (http://cxf.apache.org/)
 * GSON
 
 * App server: WebLogic 11g (10.3.6)
