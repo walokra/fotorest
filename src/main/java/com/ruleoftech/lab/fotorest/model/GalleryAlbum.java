@@ -2,6 +2,9 @@ package com.ruleoftech.lab.fotorest.model;
 
 import java.util.Arrays;
 
+/**
+ * Imgur Gallery Album Data model, see: https://api.imgur.com/models/gallery_album.
+ */
 public class GalleryAlbum {
 	private String id;
 	private String title;

@@ -1,6 +1,9 @@
 package com.ruleoftech.lab.fotorest.model;
 
 
+/**
+ * Imgur's Gallery Image Data model, see: https://api.imgur.com/models/gallery_image.
+ */
 public class GalleryImage {
 	private String id;
 	private String title;

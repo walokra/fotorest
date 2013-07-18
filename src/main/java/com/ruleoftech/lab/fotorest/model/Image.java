@@ -1,5 +1,9 @@
 package com.ruleoftech.lab.fotorest.model;
 
+
+/**
+ * Imgur's Image Data model, see: https://api.imgur.com/models/image.
+ */
 public class Image {
 	private String id;
 	private String title;

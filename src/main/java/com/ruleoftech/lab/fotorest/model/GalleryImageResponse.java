@@ -1,7 +1,7 @@
 package com.ruleoftech.lab.fotorest.model;
 
-public class GalleryImageResponse {
 
+public class GalleryImageResponse {
 	private GalleryImage[] data;
 	private Boolean success;
 	private Integer status;

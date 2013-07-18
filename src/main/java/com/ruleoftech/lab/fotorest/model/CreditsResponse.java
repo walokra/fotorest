@@ -1,7 +1,6 @@
 package com.ruleoftech.lab.fotorest.model;
 
 public class CreditsResponse {
-
 	private Credits data;
 	private Boolean success;
 	private Integer status;

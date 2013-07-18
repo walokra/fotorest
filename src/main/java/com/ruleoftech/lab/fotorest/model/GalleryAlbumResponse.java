@@ -1,5 +1,6 @@
 package com.ruleoftech.lab.fotorest.model;
 
+
 public class GalleryAlbumResponse {
 
 	private GalleryAlbum data;
