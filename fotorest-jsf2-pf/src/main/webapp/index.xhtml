@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui">
+ 
+    <h:head>
+        <title>#{msgs['title']}</title>
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    </h:head>
+    
+	<h:body> 
+		<div class="container">
+		<div class="header">
+			<h:form id="headerForm">
+			<img style="float: left; margin-right: 10px;" src="images/fotorest_logo_s.png" alt="logo" />
+			<h1 class="title"><a href="/fotorest-jsf2-pf/"><h:outputText value="#{msgs['title']}" /></a></h1>
+
+			<p:commandButton value="search" id="searchBtnHidden" actionListener="#{browserBean.search}" 
+				update=":form:dataTable" style="display: none;"/>			
+			<p:commandButton value="#{msgs['action.hot']}" update=":form:dataTable" 
+				actionListener="#{browserBean.hot}" id="btnHotSubmit" immediate="true"/>
+			<p:commandButton value="#{msgs['action.random']}" update=":form:dataTable" 
+				actionListener="#{browserBean.random}" id="btnRndSubmit" immediate="true"/>
+			<p:inputText label="search" styleClass="search" id="search" value="#{browserBean.query}"/>
+			<p:watermark for="search" value="#{msgs['action.search.watermark']}"/>
+			<p:defaultCommand target="searchBtnHidden"/>
+			</h:form>
+		</div>
+		
+		<div class="content">
+			<h:form id="form">
+			
+			<p:growl id="growl" autoUpdate="true" showDetail="true"/>
+			
+			<div class="left">
+				<p:dataTable id="dataTable" var="image" value="#{browserBean.dataModel}"   
+						scrollRows="50" scrollable="true" liveScroll="true" scrollHeight="100%" 
+						selection="#{browserBean.selectedImage}" selectionMode="single" rowKey="#{image.id}">
+					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display"/>
+					<p:column headerText="Title">#{image.title}</p:column>
+					<p:column headerText="Link">  
+					    <h:outputLink value="#{image.link}"><h:outputText value="#{image.link}" /></h:outputLink>  
+					</p:column>
+				</p:dataTable>
+			</div>
+			
+	 		<div class="right">
+				<h:panelGroup id="display" class="display">
+					<h3><h:outputText value="#{browserBean.selectedImage.title}" /></h3>
+					<p:outputPanel id="imagePanel" binding="#{browserBean.imagePanel}" />
+				</h:panelGroup>
+			</div>
+			
+			<div class="footer">
+				<h:outputText value="#{browserBean.credits}" />
+				<div style="float: right">
+					<h:outputText value="#{msgs['version']}" /> | <h:outputText value="#{msgs['version.build']}" />
+				</div>
+			</div>
+			</h:form>
+		</div>
+		</div>
+    </h:body>
+</html>

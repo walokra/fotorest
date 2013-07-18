@@ -1,0 +1,92 @@
+html{min-height:100%; position:relative; margin: 0px; padding: 0px;}
+body{height: 100%;}
+body, input, textarea, button {
+	color: #333;
+	font: 11px Helmet, Freesans, sans-serif;
+}
+
+/* =Layout
+------------------------------------------------------------------------------*/
+.container {
+	position: fixed;
+	top: 0; left: 0; bottom: 0; right: 0;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.feedback {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	padding: 15px;
+	width: 33%;
+}
+
+.header {
+	position:relative;
+	top:0;
+	height: 80px;
+	padding-bottom: 5px;
+}
+
+	.header .title {
+		margin-top: 5px;
+	}
+
+.content {}
+
+.left {
+	position: fixed;
+	top: 85px;
+	bottom: 25px;
+	width: 33%;
+	overflow: auto;
+}
+
+	.search {
+		width: 24%;
+	}
+
+.right {
+	position: fixed;
+	top: 85px;
+	left: 34%;
+	width: 64%;
+	height: auto;
+	bottom: 25px;
+	padding: 0 10px 25px 10px;
+	overflow: auto;
+}
+
+.display .imgTitle {
+	padding: 5px;
+	display: block;
+}
+
+.display img {
+	padding: 5px; clear: both;
+}
+
+.footer {
+	position: fixed;
+	width: 33%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 10px;
+}
+
+/* =Common
+------------------------------------------------------------------------------*/
+a, a:link, a:visited {
+		color: #333;
+}
+
+.title a, .title a:link, .title a:visited {
+	color: #333;
+	text-decoration: none;
+}
+
