@@ -5,7 +5,7 @@
 	<groupId>com.ruleoftech.lab</groupId>
 	<artifactId>fotorest-vaadin</artifactId>
 	<packaging>war</packaging>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<name>Fotorest Vaadin App</name>
 	<description>Simple imgur browser done with Vaadin</description>
 	
