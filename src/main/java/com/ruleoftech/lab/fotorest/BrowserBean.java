@@ -24,10 +24,10 @@ import com.ruleoftech.lab.fotorest.model.GalleryImageDataModel;
 import com.ruleoftech.lab.fotorest.model.Image;
 import com.ruleoftech.lab.fotorest.services.RestService;
 
-@SuppressWarnings("serial")
 @SessionScoped
 @Named
 public class BrowserBean implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserBean.class);
 
@@ -46,17 +46,12 @@ public class BrowserBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		LOGGER.trace("{'method':'init'}");
-		System.out.print("{'method':'init'}");
 
-		if (dataModel == null) {
-			this.dataModel = new GalleryImageDataModel(service.hotImages());
-		}
 		try {
+			this.dataModel = new GalleryImageDataModel(service.hotImages());
 			credits = service.getCredits();
 		} catch (BusinessException e) {
-			FacesMessage msg = new FacesMessage(e.getMessage());
-			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			LOGGER.error(e.getMessage());
 		}
 
 		imagePanel = new OutputPanel();
@@ -94,7 +89,7 @@ public class BrowserBean implements Serializable {
 
 	public void onRowSelect(SelectEvent event) {
 		selectedImage = (GalleryImage) event.getObject();
-		imagePanel = new OutputPanel();
+		imagePanel.getChildren().removeAll(imagePanel.getChildren());
 
 		if (selectedImage != null) {
 			LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", selectedImage.toString());
@@ -114,12 +109,11 @@ public class BrowserBean implements Serializable {
 					for (Image i : Arrays.asList(album.getImages())) {
 						GraphicImage image = new GraphicImage();
 						image.setUrl(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
-						image.setStyle("padding: 5px; clear: both;");
 						imagePanel.getChildren().add(image);
 
 						HtmlOutputText title = new HtmlOutputText();
 						title.setValue(i.getTitle());
-						title.setStyle("padding: 5px; display: block;");
+						title.setStyleClass("imgTitle");
 						imagePanel.getChildren().add(title);
 					}
 				} catch (Exception e) {

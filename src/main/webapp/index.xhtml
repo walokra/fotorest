@@ -9,58 +9,7 @@
  
     <h:head>
         <title>#{msgs['title']}</title>
-        <style type="text/css">
-        	html{min-height:100%; position:relative; margin: 0px; padding: 0px;}
-        	body{height: 100%;}
-        	body, input, textarea, button {
-				color: #333;
-				font: 11px Helmet, Freesans, sans-serif;
-			}
-        	.container {
-        		position: fixed;
-        		top: 0; left: 0; bottom: 0; right: 0;
-        		min-height: 100%;
-        		height: auto !important;
-				height: 100%;
-				margin: 0 auto;
-        		padding: 10px;
-        	}
-        	.header {
-        		position:relative;
-				top:0;
-        		height: 75px;
-        	}
-        	.content {
-        	}
-        	.left {
-				position: fixed;
-        		top: 80px;
-        		bottom: 25px;
-        		width: 33%;
-        		overflow: auto;
-        	}
-        		.search {
-        			width: 24%;
-        		}
-        	.right {
-        		position: fixed;
-        		top: 80px;
-        		left: 34%;
-        		width: 64%;
-        		height: auto;
-        		bottom: 25px;
-        		padding: 0 10px 25px 10px;
-        		overflow: auto;
-        	}
-	       	.footer {
-	       		position: fixed;
-	       		width: 33%;
-	       		bottom: 0;
-	       		left: 0;
-	       		right: 0;
-	       		padding: 10px;
-	       	}
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
     </h:head>
     
 	<h:body> 
@@ -68,7 +17,7 @@
 		<div class="header">
 			<h:form id="headerForm">
 			<img style="float: left; margin-right: 10px;" src="images/fotorest_logo_s.png" alt="logo" />
-			<h1 style="margin-top: 2px;"><h:outputText value="#{msgs['title']}" /></h1>
+			<h1 class="title"><a href="/fotorest-jsf2-pf/"><h:outputText value="#{msgs['title']}" /></a></h1>
 
 			<p:commandButton value="search" id="searchBtnHidden" actionListener="#{browserBean.search}" 
 				update=":form:dataTable" style="display: none;"/>			
@@ -91,10 +40,8 @@
 				<p:dataTable id="dataTable" var="image" value="#{browserBean.dataModel}"   
 						scrollRows="50" scrollable="true" liveScroll="true" scrollHeight="100%" 
 						selection="#{browserBean.selectedImage}" selectionMode="single" rowKey="#{image.id}">
-					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display :form:growl"/>
-					<p:column headerText="Title">
-					   #{image.title}  
-					</p:column>
+					<p:ajax event="rowSelect" listener="#{browserBean.onRowSelect}" update=":form:display :form:imagePanel"/>
+					<p:column headerText="Title">#{image.title}</p:column>
 					<p:column headerText="Link">  
 					    <h:outputLink value="#{image.link}"><h:outputText value="#{image.link}" /></h:outputLink>  
 					</p:column>
@@ -102,7 +49,7 @@
 			</div>
 			
 	 		<div class="right">
-				<h:panelGroup id="display">
+				<h:panelGroup id="display" class="display">
 					<h3><h:outputText value="#{browserBean.selectedImage.title}" /></h3>
 					<p:outputPanel id="imagePanel" binding="#{browserBean.imagePanel}" />
 				</h:panelGroup>
