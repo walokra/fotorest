@@ -17,6 +17,7 @@ import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ruleoftech.lab.fotorest.exception.BusinessException;
 import com.ruleoftech.lab.fotorest.model.GalleryAlbum;
 import com.ruleoftech.lab.fotorest.model.GalleryImage;
 import com.ruleoftech.lab.fotorest.model.GalleryImageDataModel;
@@ -50,31 +51,45 @@ public class BrowserBean implements Serializable {
 		if (dataModel == null) {
 			this.dataModel = new GalleryImageDataModel(service.hotImages());
 		}
-		credits = service.getCredits();
+		try {
+			credits = service.getCredits();
+		} catch (BusinessException e) {
+			FacesMessage msg = new FacesMessage(e.getMessage());
+			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
 		imagePanel = new OutputPanel();
 	}
 
 	public void hot() {
-		FacesMessage msg = new FacesMessage("Fetching hot images");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		this.dataModel = new GalleryImageDataModel(service.hotImages());
+		try {
+			this.dataModel = new GalleryImageDataModel(service.hotImages());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Fetching hot images"));
+		} catch (BusinessException e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+		}
 	}
 
 	public void random() {
-		FacesMessage msg = new FacesMessage("Fetching random images");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		this.dataModel = new GalleryImageDataModel(service.randomImages());
+		try {
+			this.dataModel = new GalleryImageDataModel(service.randomImages());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Fetching random images"));
+		} catch (BusinessException e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+		}
 	}
 
 	public void search() {
-		LOGGER.trace("{'method':'search', 'debug':''}");
-
-		FacesMessage msg = new FacesMessage("Searching images");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		this.dataModel = new GalleryImageDataModel(service.searchImages(query));
+		try {
+			this.dataModel = new GalleryImageDataModel(service.searchImages(query));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching images"));
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+		}
 	}
 
 	public void onRowSelect(SelectEvent event) {
@@ -85,27 +100,31 @@ public class BrowserBean implements Serializable {
 			LOGGER.trace("{'method':'photoList.valueChange', 'debug':'{}'}", selectedImage.toString());
 			if (!selectedImage.isIs_album()) {
 				// Show original image if smaller than large thumbnail (640x640)
-				// selectedImage.setLink(getExternalResourceFromUrl(selectedImage.getLink(), selectedImage.getWidth(),
-				// selectedImage.getHeight()));
 				GraphicImage image = new GraphicImage();
 				image.setUrl(getExternalResourceFromUrl(selectedImage.getLink(), selectedImage.getWidth(),
 						selectedImage.getHeight()));
 				imagePanel.getChildren().add(image);
 			} else {
 				String[] tokens = selectedImage.getLink().split("\\/(?=[^\\/]+$)");
-				GalleryAlbum album = service.getGalleryAlbum(tokens[1]);
-				LOGGER.trace("{'method':'onRowSelect.album', 'debug':'{}'}", album.toString());
+				GalleryAlbum album = new GalleryAlbum();
+				try {
+					album = service.getGalleryAlbum(tokens[1]);
+					LOGGER.trace("{'method':'onRowSelect.album', 'debug':'{}'}", album.toString());
 
-				for (Image i : Arrays.asList(album.getImages())) {
-					GraphicImage image = new GraphicImage();
-					image.setUrl(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
-					image.setStyle("padding: 5px; clear: both;");
-					imagePanel.getChildren().add(image);
+					for (Image i : Arrays.asList(album.getImages())) {
+						GraphicImage image = new GraphicImage();
+						image.setUrl(getExternalResourceFromUrl(i.getLink(), i.getWidth(), i.getHeight()));
+						image.setStyle("padding: 5px; clear: both;");
+						imagePanel.getChildren().add(image);
 
-					HtmlOutputText title = new HtmlOutputText();
-					title.setValue(i.getTitle());
-					title.setStyle("padding: 5px; display: block;");
-					imagePanel.getChildren().add(title);
+						HtmlOutputText title = new HtmlOutputText();
+						title.setValue(i.getTitle());
+						title.setStyle("padding: 5px; display: block;");
+						imagePanel.getChildren().add(title);
+					}
+				} catch (Exception e) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
 				}
 			}
 		}
