@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+	<title><wicket:message key="title">[Title]</wicket:message></title>
+	<!-- jQuery UI -->
+	<link rel="stylesheet" type="text/css" href="css/flat-bw/jquery-ui-1.10.3.custom.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/styles.css" />
+	<script type="text/javascript">
+	$(document).ready(function() {
+		 
+		var watermark = 'Search the gallery';
+	 
+		//init, set watermark text and class
+		$('#search').val(watermark).addClass('watermark');
+	 
+		//if blur and no value inside, set watermark text and class again.
+	 	$('#search').blur(function(){
+	  		if ($(this).val().length == 0){
+	    		$(this).val(watermark).addClass('watermark');
+			}
+	 	});
+	 
+		//if focus and text is watermrk, set it to empty and remove the watermark class
+		$('#search').focus(function(){
+	  		if ($(this).val() == watermark){
+	    		$(this).val('').removeClass('watermark');
+			}
+	 	});
+	});
+	</script>
+</head>
+    
+<body> 
+	<div class="container">
+	<form wicket:id="form">
+		<div class="feedback" wicket:id="feedback">[Feedback]</div>
+
+		<div class="header">
+			<img style="float: left; margin-right: 10px;" src="images/fotorest_logo_s.png" alt="logo" />
+			<h1 class="title"><a href="/fotorest-wicket/"><wicket:message key="title">[Title]</wicket:message></a></h1>
+			
+			<input type="submit" wicket:id="hotButton"
+				wicket:message="value:action.hot"/>
+			<input type="submit" wicket:id="randomButton"
+				wicket:message="value:action.random"/>
+			<input type="submit" style="display: none;" wicket:id="searchButton"
+				wicket:message="value:action.search"/>
+			<input id="search" type="text" class="search" value="[Search]" wicket:id="search" />
+		</div>
+	
+		<div class="content">
+			<div class="left">
+				<table wicket:id="datatable" class="resultTable"></table>
+			</div>
+			
+	 		<div class="right">
+				<div class="display">
+					<h3><span wicket:id="galleryImageTitle">[Title]</span></h3>
+					<div wicket:id="galleryAlbumPanel">
+						<div class="imgTitle" wicket:id="title">[title]</div>
+						<img wicket:id="image" alt="image" />
+        			</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+				<wicket:container wicket:id="credits">[credits]</wicket:container>
+				<div style="float: right">
+					<wicket:container wicket:id="wicketVersion">[wicket.version]</wicket:container> | 
+					<wicket:message key="version">[version]</wicket:message> | 
+					<wicket:message key="version.build">[version.build]</wicket:message>
+				</div>
+			</div>
+		</div>
+	</form>
+	</div>
+   </body>
+</html>
