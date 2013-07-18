@@ -2,6 +2,9 @@ package com.ruleoftech.lab.model;
 
 import java.io.Serializable;
 
+/**
+ * Imgur's Credits, endpoint: https://api.imgur.com/3/credits.
+ */
 public class Credits implements Serializable {
 	private static final long serialVersionUID = 1L;
 

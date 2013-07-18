@@ -3,6 +3,9 @@ package com.ruleoftech.lab.model;
 import java.io.Serializable;
 import java.util.Arrays;
 
+/**
+ * Imgur Gallery Album Data model, see: https://api.imgur.com/models/gallery_album.
+ */
 public class GalleryAlbum implements Serializable {
 	private static final long serialVersionUID = 1L;
 

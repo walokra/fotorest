@@ -2,6 +2,9 @@ package com.ruleoftech.lab.model;
 
 import java.io.Serializable;
 
+/**
+ * Imgur's Gallery Image Data model, see: https://api.imgur.com/models/gallery_image.
+ */
 public class GalleryImage implements Serializable {
 	private static final long serialVersionUID = 1L;
 
