@@ -29,10 +29,10 @@
 		<cxf.version>2.7.5</cxf.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<gson.version>1.7.1</gson.version>
-		<tomee.version>1.5.2</tomee.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     	<buildNumber>${maven.build.timestamp}</buildNumber>
+    	<jetty.version>8.1.7.v20120910</jetty.version>
 	</properties>
 	<dependencies>
 		<!--  WICKET DEPENDENCIES -->
@@ -93,7 +93,6 @@
 			<version>${org.springframework.version}</version>
 		</dependency>
 		
-		<!-- REST: Apache CXF comes with TomEE+ -->
 		<dependency>
 	        <groupId>org.apache.cxf</groupId>
 	        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -192,13 +191,15 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.openejb.maven</groupId>
-				<artifactId>tomee-maven-plugin</artifactId>
-				<version>1.0.1</version>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
 				<configuration>
-					<tomeeVersion>${tomee.version}</tomeeVersion>
-				</configuration>
-            </plugin>
+					<webApp>
+    					<contextPath>/fotorest-wicket</contextPath>
+    				</webApp>
+    			</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
