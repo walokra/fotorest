@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Fotorest - Backbone + Underscore</title>
+		<script src="js/jquery-2.0.3.min.js"></script>
+		<script src="js/json2.js"></script>
+		<script src="js/underscore-1.5.2-min.js"></script>
+		<script src="js/backbone-1.1.0-min.js"></script>
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+	</head>
+	<body>
+		<script type="text/javascript">	
+            var GalleryImage = Backbone.Model.extend();
+
+            //instaitiate a new galleryImage
+            var galleryImage = new GalleryImage;
+            
+            // use ImageView to render all of the images in the gallery. We need to create a collection view. 
+            // This is the same as a normal view, but you’ll be passing a collection to it. 
+            // The render function will know how to deal with an array rather than single model.
+            var ImageView = Backbone.View.extend({
+                className  : 'image',
+                initialize : function() {
+                    this.listenTo(this.model, 'destroy', this.remove);
+                    //this.render();
+                },
+                // '<img title="<%= _.escape(title) %>" src="http://i.imgur.com/<%= id %>.jpg" />'
+                template : _.template(
+                      '<img title="<%= _.escape(title) %>" src="http://i.imgur.com/<%= imageId %>b.jpg" />'
+                ),
+                render : function() {
+                    //console.log(JSON.stringify(this.model));
+                    var attributes = this.model.toJSON();
+                    var imageId = attributes.id;    
+                        if (attributes.is_album) {
+                            console.log("is_album");
+                            imageId = attributes.cover;
+                    }
+                    attributes.imageId = imageId;
+                    this.$el.html(this.template(attributes));
+                    return this;
+                }
+            });
+            
+            // Get a Collection of models, with all the image data for the front page of Imgur. 
+            var GalleryImages = Backbone.Collection.extend({
+                model: GalleryImage,
+                initialize: function(){
+                },
+                url : 'https://api.imgur.com/3/gallery/hot/viral/0.json',
+                parse: function(resp) {
+                    return resp.data;
+                }
+            });
+            
+            //default eventsview for events collection's view
+            var MainGalleryView = Backbone.View.extend({
+                className : 'images',
+                intialize: function(){
+                    this.render();
+                },
+                render: function(){
+                    // we don't want any old stuff there if we render this multiple times.
+                    this.$el.empty();
+                
+                    //loop through each model, and render them separately
+                    _(this.collection.models).each(this.renderOne, this);
+                    return this;
+                },
+                renderOne : function(image) {
+                    //console.log(JSON.stringify(image))
+                    // init the ImageView and passed in its model here
+                    var view = new ImageView({
+                        model : image
+                    });
+
+                    this.$el.append(view.render().el);
+                }
+            });
+                        
+            //
+            // Fetching gallery data from imgur REST API
+            //
+            
+            // Sending authentication header
+            // Either with headers/beforeSend (1)
+            // Or by modifying Backbone.sync  (2)
+            // (1)
+            /* 
+            sendAuthentication = function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Client-ID 000000000000000')
+            }
+            mainGallery.fetch({
+                //headers: {'Authorization' :'Client-ID 000000000000000'},
+                beforeSend: sendAuthentication
+            });
+            */
+            
+            // (2)
+            // Store a version of Backbone.sync to call from the modified version we create
+            var backboneSync = Backbone.sync;
+            Backbone.sync = function (method, model, options) {
+                options.headers = {
+                    // Set the 'Authorization' header
+                    'Authorization': 'Client-ID 0df26e2cd41441a'
+                };
+
+                // Call the stored original Backbone.sync method with extra headers argument added
+                backboneSync(method, model, options);
+            };
+            
+            var galleryView;
+            
+            var ImgurRouter = Backbone.Router.extend({
+                routes : {
+                    '/:id' : 'showImage',
+                    ''   : 'showGallery'
+                },
+                initialize : function() {
+                    this.galleryImages = new GalleryImages;
+                    this.galleryImages.fetch;
+                },
+                
+                showImage : function(id) {
+                    console.log("showImage");
+                    //find the image in the gallery, saves ajax requests!
+                    var image = this.galleryImages.get(id);    
+
+                    if(image) {
+                        var imageView = new ImageView({
+                            'model' : image
+                        });
+
+                        $('body').html(imageView.render().el);
+                    } else {
+                        //show a fancy 404 page with a giraffe.
+                    }
+                },
+                
+                showGallery : function() {
+                    console.log("showGallery");
+                    
+                    // Instantiating galleryImages
+                    var galleryImages = new GalleryImages;
+                    galleryImages.fetch({
+                        success: function(response, xhr) {
+                            console.log("success=" + xhr.status);
+                            //console.log("response=" + JSON.stringify(response)); // data element only
+                            //console.log("xhr=" + JSON.stringify(xhr)); // full response
+                            $('.gallery', this.el).html(galleryView.render().el);
+                        },
+                        error: function(response, xhr) {
+                            console.log("xhr=" + JSON.stringify(xhr));
+                            $('div', this.el).append(response);
+                        }
+                    });
+                    
+                    var galleryView = new MainGalleryView({
+                        collection : galleryImages
+                    });
+                }
+            });
+            
+            var router = new ImgurRouter();
+            Backbone.history.start();
+		</script>
+        
+        <div class="content">
+            <h1>Fotorest - Backbone + Underscore</h1>
+            <div class="gallery"></div>
+        </div>
+	</body>
+</html>
