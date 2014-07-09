@@ -12,9 +12,6 @@ var GalleryImage = Backbone.Model.extend();
 // Collection of images, with all the image data for the given endpoint. 
 var MainGalleryCollection = Backbone.Collection.extend({
     model: MainGallery,
-    initialize: function(){
-    },
-    url: imgur_endpoint,
     parse: function(response) {
         return response.data;
     }
@@ -111,9 +108,8 @@ var GalleryAlbumView = Backbone.View.extend({
         //console.log(JSON.stringify(data))
         var attributes = data.toJSON();
         //console.log("attributes: " + JSON.stringify(attributes));
-        this.$el.html(this.template(attributes));
-        
         if (attributes.is_album === true) {
+            this.$el.html(this.template(attributes));
             //console.log("is_album");
             var images = attributes.images;
             //console.log("is_album: " + JSON.stringify(images));
@@ -190,9 +186,11 @@ var mainGalleryView;
 var galleryAlbumView;
 
 var ImgurRouter = Backbone.Router.extend({
+    // https://api.imgur.com/3/gallery/{section}
     routes : {
         'gallery/:id' : 'showGalleryAlbum',
-        ''   : 'showMainGallery'
+        'g/:section' : 'showGallery',
+        '' : 'showMainGallery'
     },
     initialize : function() {
     },
@@ -201,7 +199,7 @@ var ImgurRouter = Backbone.Router.extend({
         //console.log("showGalleryAlbum=" + id);
 
         // Instantiating GalleryAlbumCollection
-        this.galleryAlbumCollection = new GalleryAlbumCollection(id);
+        this.galleryAlbumCollection = new GalleryAlbumCollection();
         this.galleryAlbumCollection.url = imgur_gallery_endpoint + id;
         var self = this;
         
@@ -213,6 +211,9 @@ var ImgurRouter = Backbone.Router.extend({
                 if (this.galleryAlbumView) this.galleryAlbumView.close();
                 self.galleryAlbumView = new GalleryAlbumView({model:self.galleryAlbumCollection});
                 $('.galleryalbum', this.el).html(self.galleryAlbumView.render().el);
+                $('.gallerymodal').modal({
+                    keyboard: true
+                });
             },
             error: function(response, xhr) {
                 console.log("xhr=" + JSON.stringify(xhr));
@@ -221,10 +222,34 @@ var ImgurRouter = Backbone.Router.extend({
         });
     },
 
+    showGallery : function(section) {
+        console.log("showGallery=" + section);
+        // Instantiating galleryImageCollection
+        this.mainGalleryCollection = new MainGalleryCollection();
+        this.mainGalleryCollection.url = imgur_gallery_endpoint + section;
+        var self = this;
+        
+        this.mainGalleryCollection.fetch({
+            success: function(response, xhr) {
+                console.log("success=" + xhr.status);
+                //console.log("response=" + JSON.stringify(response)); // data element only
+                //console.log("xhr=" + JSON.stringify(xhr)); // full response
+                self.mainGalleryView = new MainGalleryView({model:self.mainGalleryCollection});
+                $('.gallery', this.el).html(self.mainGalleryView.render().el);
+                if (self.requestedId) self.galleryAlbumView(self.requestedId);
+            },
+            error: function(response, xhr) {
+                console.log("xhr=" + JSON.stringify(xhr));
+                $('div', this.el).append(response);
+            }
+        });
+    },
+    
     showMainGallery : function() {
         console.log("showMainGallery");
         // Instantiating galleryImageCollection
         this.mainGalleryCollection = new MainGalleryCollection();
+        this.mainGalleryCollection.url = imgur_gallery_endpoint;
         var self = this;
         
         this.mainGalleryCollection.fetch({

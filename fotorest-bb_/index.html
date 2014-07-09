@@ -2,20 +2,56 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Fotorest - Backbone + Underscore</title>
+		<title>Fotorest - Backbone</title>
+        <!--
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
-	</head>
+        -->
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/styles.css">
+        <script src="js/jquery-2.0.3.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+            $(".dropdown-menu li a").click(function(){
+                  $(".btn:first-child").text($(this).text());
+                  $(".btn:first-child").val($(this).text());
+            });
+        });
+        </script>
+    </head>
 	<body>
         <div id="header">
-            <h1 class="title"><a href="index.html">Fotorest - Backbone + Underscore</a></h1>
+            <h1 class="title"><a href="index.html">Fotorest - Backbone</a></h1>
+            
+            <div class="dropdown galleryDD">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                <span class="selected">Main gallery</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#g/hot" value="hot">main gallery</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#g/user" value="new">user submitted</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#g/top" value="top">highest scoring</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#g/memes" value="g/memes">memes</a></li>
+              </ul>
+            </div>
         </div>
         
         <div class="content">
             <div class="gallery"></div>
-            
-            <div class="galleryalbum"></div>
-        </div>        
+        </div>
+        
+        <div class="modal gallerymodal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content"> 
+                    <div class="galleryalbum"></div>
+                </div>
+            </div>
+        </div>
         
         <!-- Templates -->
         <script type="text/template" id="tpl-gallery">
@@ -23,18 +59,22 @@
         </script>
 
         <script type="text/template" id="tpl-galleryalbum">
-            <h2><%= _.escape(title) %></h2>
+            <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><%= _.escape(title) %></h4>
+            </div>
         </script>
         
         <script type="text/template" id="tpl-image">
-            <h3><%= _.escape(title) %></h3>
+            <div class="modal-body">
+                <h3><%= _.escape(title) %></h3>
 
-            <img title="<%= _.escape(title) %>" src="<%= link %>" width="640" />
+                <img title="<%= _.escape(title) %>" src="<%= link %>" width="640" />
 
-            <div class="desc"><%= _.escape(description) %></div>
+                <div class="desc"><%= _.escape(description) %></div>
+            </div>
         </script>
 
-        <script src="js/jquery-2.0.3.min.js"></script>
 		<script src="js/json2.js"></script>
 		<script src="js/underscore-1.5.2-min.js"></script>
 		<script src="js/backbone-1.1.0-min.js"></script>
