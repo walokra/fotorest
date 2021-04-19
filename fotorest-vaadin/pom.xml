@@ -23,7 +23,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>7.1.0</vaadin.version>
+		<vaadin.version>8.12.4</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<org.springframework.version>5.3.2</org.springframework.version>
 		<cxf.version>2.7.5</cxf.version>
